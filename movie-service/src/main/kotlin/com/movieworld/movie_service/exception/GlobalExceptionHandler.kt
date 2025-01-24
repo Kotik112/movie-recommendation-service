@@ -23,4 +23,17 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
         )
         return ResponseEntity.status(exception.getStatus()).body(errorDetail)
     }
+
+    @ExceptionHandler(MovieNotFoundException::class)
+    fun handleUserNotFoundException(
+        exception: MovieNotFoundException,
+        request: WebRequest
+    ): ResponseEntity<ErrorDetail> {
+        val errorDetail = ErrorDetail(
+            timestamp = Date(),
+            message = exception.message,
+            details = request.getDescription(false)
+        )
+        return ResponseEntity.status(exception.getStatus()).body(errorDetail)
+    }
 }

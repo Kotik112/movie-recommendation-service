@@ -5,8 +5,8 @@ import com.movieworld.movie_service.model.MovieDto
 interface MovieManagementService {
 
     fun addMovie(movieDto: MovieDto): MovieDto
-    fun updateMovie(movieDto: MovieDto): MovieDto
-    fun deleteMovie(movieId: Long)
-    fun getMovie(movieId: Long): MovieDto
+    fun updateMovie(currentTitle: String, movieDto: MovieDto): Boolean
+    fun deleteMovie(title: String): Boolean
+    fun getMovie(title: String): MovieDto
     fun getMovies(): List<MovieDto>
 }

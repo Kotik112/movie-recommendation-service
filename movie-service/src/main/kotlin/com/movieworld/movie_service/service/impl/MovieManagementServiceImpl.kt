@@ -1,6 +1,7 @@
 package com.movieworld.movie_service.service.impl
 
 import com.movieworld.movie_service.exception.MovieAlreadyExistsException
+import com.movieworld.movie_service.exception.MovieNotFoundException
 import com.movieworld.movie_service.model.Movie
 import com.movieworld.movie_service.model.MovieDto
 import com.movieworld.movie_service.repository.MovieManagementRepository
@@ -26,19 +27,32 @@ class MovieManagementServiceImpl(
         }
     }
 
-    override fun updateMovie(movieDto: MovieDto): MovieDto {
-        TODO("Not yet implemented")
+    override fun updateMovie(currentTitle: String, movieDto: MovieDto): Boolean {
+        if (movieManagementRepository.existsByTitle(currentTitle)) {
+            return movieManagementRepository.updateMovie(
+                currentTitle = currentTitle,
+                title = movieDto.title,
+                genre = movieDto.genre,
+                releaseDate = movieDto.releaseDate,
+                director = movieDto.director,
+                description = movieDto.description
+            ) > 0
+        } else {
+            throw MovieNotFoundException(message = "Movie with title $currentTitle not found")
+        }
     }
 
-    override fun deleteMovie(movieId: Long) {
-        TODO("Not yet implemented")
+    override fun deleteMovie(title: String): Boolean {
+        val rowsDeleted = movieManagementRepository.deleteByTitle(title = title)
+        return rowsDeleted > 0
     }
 
-    override fun getMovie(movieId: Long): MovieDto {
-        TODO("Not yet implemented")
+    override fun getMovie(title: String): MovieDto {
+        val movie = movieManagementRepository.findMovieByTitle(title = title)
+        return movie.toDto()
     }
 
     override fun getMovies(): List<MovieDto> {
-        TODO("Not yet implemented")
+        return movieManagementRepository.findAllMovies().map { it.toDto() }
     }
 }

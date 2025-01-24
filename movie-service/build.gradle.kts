@@ -1,3 +1,6 @@
+val tcVersion = "1.20.4"
+val mockitoVersion = "5.0.0"
+
 plugins {
 	kotlin("jvm") version "1.9.25"
 	kotlin("plugin.spring") version "1.9.25"
@@ -37,7 +40,12 @@ dependencies {
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.mockito:mockito-core:$mockitoVersion")
+	testImplementation("org.mockito:mockito-inline:$mockitoVersion")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+	testImplementation("org.testcontainers:junit-jupiter:$tcVersion")
+	testImplementation("org.testcontainers:testcontainers:$tcVersion")
+	testImplementation("org.testcontainers:postgresql:$tcVersion")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
