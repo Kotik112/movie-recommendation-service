@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class MovieManagementRepositoryTest: PostgresTestContainer() {
 
@@ -40,5 +41,39 @@ class MovieManagementRepositoryTest: PostgresTestContainer() {
         assertThat(movies).hasSize(2)
         assertEquals("The Shawshank Redemption", movies[0].title)
         assertEquals("The Godfather", movies[1].title)
+    }
+
+    @Test
+    fun `Test findMovieByTitle`() {
+        val movie = movieManagementRepository.findMovieByTitle("The Shawshank Redemption")
+        assertEquals("The Shawshank Redemption", movie.title)
+    }
+
+    @Test
+    fun `Test existsByTitle`() {
+        val exists = movieManagementRepository.existsByTitle("The Shawshank Redemption")
+        assertTrue(exists)
+    }
+
+    @Test
+    fun `Test updateMovie`() {
+        val updated = movieManagementRepository.updateMovie(
+            currentTitle = "The Shawshank Redemption",
+            title = "The Shawshank Redemption",
+            genre = "Drama",
+            releaseDate = LocalDate.of(1994, 10, 14),
+            director = "New Director",
+            description = "New Description"
+        )
+        assertEquals(1, updated)
+    }
+
+    @Test
+    fun `Test deleteByTitle`() {
+        val deleted = movieManagementRepository.deleteByTitle("The Shawshank Redemption")
+        assertEquals(1, deleted)
+
+        val movies = movieManagementRepository.findAllMovies()
+        assertThat(movies).hasSize(1)
     }
 }
