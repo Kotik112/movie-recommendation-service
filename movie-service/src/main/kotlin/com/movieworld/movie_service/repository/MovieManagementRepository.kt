@@ -12,6 +12,9 @@ import java.time.LocalDate
 @Repository
 interface MovieManagementRepository: JpaRepository<Movie, Long> {
 
+    @Query("SELECT * FROM movie WHERE id = :id", nativeQuery = true)
+    fun findMovieById(@Param("id") id: Long): Movie
+
     @Query("SELECT * FROM movie WHERE title = :title", nativeQuery = true)
     fun findMovieByTitle(@Param("title") title: String): Movie
 

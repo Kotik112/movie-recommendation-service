@@ -1,7 +1,6 @@
 package com.movieworld.movie_service
 
 import com.movieworld.movie_service.util.PostgresTestContainer
-import org.assertj.core.api.Assertions.assertThat
 import java.sql.DriverManager
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -21,6 +20,5 @@ class PostgresContainerTest: PostgresTestContainer() {
         DriverManager.getConnection(jdbcUrl, username, password).use { connection ->
             assertTrue(connection.isValid(2))
         }
-
     }
 }

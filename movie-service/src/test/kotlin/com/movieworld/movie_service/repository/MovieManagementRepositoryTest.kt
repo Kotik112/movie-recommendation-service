@@ -44,6 +44,15 @@ class MovieManagementRepositoryTest: PostgresTestContainer() {
     }
 
     @Test
+    fun `Test findMovieById`() {
+        val movie1 = movieManagementRepository.findMovieById(1)
+        assertEquals("The Shawshank Redemption", movie1.title)
+
+        val movie2 = movieManagementRepository.findMovieById(2)
+        assertEquals("The Godfather", movie2.title)
+    }
+
+    @Test
     fun `Test findMovieByTitle`() {
         val movie = movieManagementRepository.findMovieByTitle("The Shawshank Redemption")
         assertEquals("The Shawshank Redemption", movie.title)

@@ -12,8 +12,14 @@ import org.springframework.stereotype.Service
 class MovieManagementServiceImpl(
     val movieManagementRepository: MovieManagementRepository
 ): MovieManagementService {
+
+    override fun findMovieById(id: Long): MovieDto {
+        val movie = movieManagementRepository.findMovieById(id = id)
+        return movie.toDto()
+    }
+
     override fun addMovie(movieDto: MovieDto): MovieDto {
-        if (!movieManagementRepository.existsByTitle(movieDto.title)) {
+        if (!movieManagementRepository.existsByTitle(title =  movieDto.title)) {
             val movie = Movie(
                 title = movieDto.title,
                 genre = movieDto.genre,

@@ -13,9 +13,14 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/movies")
+@Suppress("unused")
 class MovieManagementController(
     private val movieManagementService: MovieManagementServiceImpl
 ) {
+    @GetMapping("/id/{id}")
+    fun getMovieById(@PathVariable("id") id: Long): MovieDto {
+        return movieManagementService.findMovieById(id)
+    }
 
     @GetMapping("/{title}")
     fun getMovie(@PathVariable("title") title: String): MovieDto {
