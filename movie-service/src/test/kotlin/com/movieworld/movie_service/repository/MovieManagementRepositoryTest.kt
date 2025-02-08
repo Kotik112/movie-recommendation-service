@@ -3,20 +3,20 @@ package com.movieworld.movie_service.repository
 import com.movieworld.movie_service.model.Movie
 import com.movieworld.movie_service.util.PostgresTestContainer
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class MovieManagementRepositoryTest: PostgresTestContainer() {
 
     @Autowired
     private lateinit var movieManagementRepository: MovieManagementRepository
 
-    @BeforeEach
-    fun setup() {
+    private fun saveMovies() {
         movieManagementRepository.deleteAll()
         val movie1 = Movie(
             title = "The Shawshank Redemption",
@@ -37,6 +37,7 @@ class MovieManagementRepositoryTest: PostgresTestContainer() {
 
     @Test
     fun `test getAllMovies`() {
+        saveMovies()
         val movies = movieManagementRepository.findAllMovies()
         assertThat(movies).hasSize(2)
         assertEquals("The Shawshank Redemption", movies[0].title)
@@ -44,18 +45,29 @@ class MovieManagementRepositoryTest: PostgresTestContainer() {
     }
 
     @Test
-    fun `Test findMovieById`() {
-        val movie1 = movieManagementRepository.findMovieById(1)
-        assertEquals("The Shawshank Redemption", movie1.title)
+    fun `Test findMovieById not found`() {
+        val movie = movieManagementRepository.findMovieById(1)
+        assertTrue(movie.isEmpty)
+    }
 
-        val movie2 = movieManagementRepository.findMovieById(2)
-        assertEquals("The Godfather", movie2.title)
+    @Test
+    fun `Test findMovieById`() {
+        saveMovies()
+        val allMovies = movieManagementRepository.findAllMovies()
+        val movie1 = movieManagementRepository.findMovieById(allMovies[0].id)
+        assertTrue(movie1.isPresent)
+        assertEquals("The Shawshank Redemption", movie1.get().title)
+
+        val movie2 = movieManagementRepository.findMovieById(allMovies[1].id)
+        assertTrue(movie2.isPresent)
+        assertEquals("The Godfather", movie2.get().title)
     }
 
     @Test
     fun `Test findMovieByTitle`() {
+        saveMovies()
         val movie = movieManagementRepository.findMovieByTitle("The Shawshank Redemption")
-        assertEquals("The Shawshank Redemption", movie.title)
+        assertEquals("The Shawshank Redemption", movie.get().title)
     }
 
     @Test
@@ -66,6 +78,7 @@ class MovieManagementRepositoryTest: PostgresTestContainer() {
 
     @Test
     fun `Test updateMovie`() {
+        saveMovies()
         val updated = movieManagementRepository.updateMovie(
             currentTitle = "The Shawshank Redemption",
             title = "The Shawshank Redemption",
@@ -79,10 +92,12 @@ class MovieManagementRepositoryTest: PostgresTestContainer() {
 
     @Test
     fun `Test deleteByTitle`() {
+        saveMovies()
         val deleted = movieManagementRepository.deleteByTitle("The Shawshank Redemption")
         assertEquals(1, deleted)
 
         val movies = movieManagementRepository.findAllMovies()
         assertThat(movies).hasSize(1)
+        assertEquals("The Godfather", movies[0].title)
     }
 }

@@ -8,15 +8,16 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
+import java.util.Optional
 
 @Repository
 interface MovieManagementRepository: JpaRepository<Movie, Long> {
 
     @Query("SELECT * FROM movie WHERE id = :id", nativeQuery = true)
-    fun findMovieById(@Param("id") id: Long): Movie
+    fun findMovieById(@Param("id") id: Long): Optional<Movie>
 
     @Query("SELECT * FROM movie WHERE title = :title", nativeQuery = true)
-    fun findMovieByTitle(@Param("title") title: String): Movie
+    fun findMovieByTitle(@Param("title") title: String): Optional<Movie>
 
     @Query("SELECT * FROM movie", nativeQuery = true)
     fun findAllMovies(): List<Movie>
