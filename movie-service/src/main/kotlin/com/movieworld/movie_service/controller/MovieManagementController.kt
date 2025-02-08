@@ -29,7 +29,7 @@ class MovieManagementController(
 
     @GetMapping("/all")
     fun getMovies(): List<MovieDto> {
-        return movieManagementService.getMovies()
+        return movieManagementService.getAllMovie()
     }
 
     @PostMapping

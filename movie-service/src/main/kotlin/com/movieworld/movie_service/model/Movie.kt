@@ -27,6 +27,7 @@ data class Movie(
 ) {
     fun toDto(): MovieDto {
         return MovieDto(
+            id = id,
             title = title,
             genre = genre,
             releaseDate = releaseDate,
