@@ -8,5 +8,5 @@ interface MovieManagementService {
     fun updateMovie(currentTitle: String, movieDto: MovieDto): Boolean
     fun deleteMovie(title: String): Boolean
     fun getMovie(title: String): MovieDto
-    fun getMovies(): List<MovieDto>
+    fun getAllMovie(): List<MovieDto>
 }
