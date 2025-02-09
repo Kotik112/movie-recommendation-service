@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface MovieRecommendationRepository: JpaRepository<MovieRecommendation, Long> {
+interface MovieRecommendationRepository: JpaRepository<Unit, Long> {
 }
