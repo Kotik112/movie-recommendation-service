@@ -39,8 +39,8 @@ class UserServiceImpl(
         return savedUser.toDto()
     }
 
-    override fun getUserById(id: Long): UserDto {
-        val user = userRepository.findByUserId(id)
+    override fun getUserById(userId: Long): UserDto {
+        val user = userRepository.findByUserId(userId)
         if(user != null) {
             return user.toDto()
         } else {
@@ -63,6 +63,15 @@ class UserServiceImpl(
         return org.springframework.security.core.userdetails.User(
             user.email, user.password, emptyList()
         )
+    }
+
+    override fun getUserPreferences(userId: Long): UserDto {
+        val user = userRepository.findByUserId(userId)
+        if(user != null) {
+            return user.toDto()
+        } else {
+            throw Exception("User not found")
+        }
     }
 
 

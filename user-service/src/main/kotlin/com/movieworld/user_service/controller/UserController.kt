@@ -29,4 +29,9 @@ class UserController(
     fun getUserByEmail(@PathVariable("email") email: String): UserDto {
         return userService.getUserByEmail(email)
     }
+
+    @GetMapping("/{id}/preferences")
+    fun getUserPreferences(@PathVariable("id") id: Long): UserDto {
+        return userService.getUserPreferences(id)
+    }
 }

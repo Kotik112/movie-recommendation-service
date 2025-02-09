@@ -171,7 +171,7 @@ class MovieManagementControllerTest(
         )
 
         // when
-        val result = mockMvc.perform(
+        mockMvc.perform(
             MockMvcRequestBuilders.put("/api/v1/movies/update/{title}", "The Matrix")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedMovieDto))
@@ -181,7 +181,6 @@ class MovieManagementControllerTest(
             .andReturn()
 
         // then
-        println("Result = ${result.response.contentAsString}")
         val updatedMovie = mockMvc.perform(
             MockMvcRequestBuilders.get("/api/v1/movies/{title}", "The Matrix Reloaded")
                 .accept(MediaType.APPLICATION_JSON))
@@ -243,8 +242,20 @@ class MovieManagementControllerTest(
         result.andExpect(status().isNotFound)
     }
 
+    @Test
+    fun `should return ErrorDetail when movie not found by id`() {
+        // when
+        val result = mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/v1/movies/id/1")
+            .accept(MediaType.APPLICATION_JSON))
+
+        // then
+        result.andExpect(status().isNotFound)
+            .andExpect(jsonPath("$.message").value("Movie with id 1 not found"))
+    }
+
     private fun saveMovie(movieDto: MovieDto): MovieDto? {
-        val json = objectMapper.writeValueAsString(movieDto)
+        val json = movieDto.toJson()
         return mockMvc.perform(
             MockMvcRequestBuilders.post("/api/v1/movies")
             .contentType(MediaType.APPLICATION_JSON)
@@ -254,7 +265,7 @@ class MovieManagementControllerTest(
 
     private fun saveMovies(vararg movieDtos: MovieDto): List<MovieDto> {
         return movieDtos.map { movieDto ->
-            val json = objectMapper.writeValueAsString(movieDto)
+            val json = movieDto.toJson()
             val result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/movies")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -269,7 +280,7 @@ class MovieManagementControllerTest(
         return objectMapper.readValue(this.response.contentAsString, MovieDto::class.java)
     }
 
-//    fun MvcResult.returnBodyList(): List<MovieDto> {
-//        return objectMapper.readValue(this.response.contentAsString, objectMapper.typeFactory.constructCollectionType(List::class.java, MovieDto::class.java))
-//    }
+    private fun MovieDto.toJson(): String {
+        return objectMapper.writeValueAsString(this)
+    }
 }
