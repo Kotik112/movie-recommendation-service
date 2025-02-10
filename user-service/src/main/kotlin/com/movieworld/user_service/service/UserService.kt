@@ -9,8 +9,8 @@ interface UserService {
     fun createUser(user: UserDto): UserDto
     fun getUserById(userId: Long): UserDto
     fun getUserByEmail(email: String): UserDto
+    fun updateUser(userToUpdate: UserDto): UserDto
+    fun deleteUser(userId: Long)
     fun loadUserByUsername(email: String): UserDetails
-    fun getUserPreferences(userId: Long): UserDto
-//    fun updateUser(userToUpdate: UserDto): User
-//    fun deleteUser(userId: Long)
+    fun existsByEmail(email: String): Boolean
 }

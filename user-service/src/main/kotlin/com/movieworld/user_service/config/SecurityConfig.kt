@@ -1,14 +1,13 @@
 package com.movieworld.user_service.config
 
-import com.movieworld.user_service.repository.UserRepository
 import com.movieworld.user_service.service.UserService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.context.annotation.Lazy
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
@@ -19,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfig(
     private val passwordEncoder: PasswordEncoder,
     private val jwtUtil: JwtUtil,
-    private val userService: UserService
+    @Lazy private val userService: UserService
 ) {
 
     @Bean

@@ -8,18 +8,14 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserRepository : JpaRepository<User, Long> {
-    @Query("INSERT INTO users (first_name, last_name, email, password) VALUES (:firstName, :lastName, :email, :password) RETURNING *", nativeQuery = true)
-    fun createUser(
-        @Param("firstName") firstName: String,
-        @Param("lastName") lastName: String,
-        @Param("email") email: String,
-        @Param("password") password: String
-    ): User
 
-    @Query("SELECT * FROM users WHERE id = :id", nativeQuery = true)
+    @Query("SELECT u FROM User u JOIN FETCH u.userProfile up LEFT JOIN FETCH up.watchHistory LEFT JOIN FETCH up.ratings WHERE u.id = :id")
     fun findByUserId(@Param("id") id: Long): User?
 
-    @Query("SELECT * FROM users WHERE email = :email", nativeQuery = true)
+    @Query("SELECT u FROM User u JOIN FETCH u.userProfile up LEFT JOIN FETCH up.watchHistory LEFT JOIN FETCH up.ratings WHERE u.email = :email")
     fun findByEmail(@Param("email") email: String): User?
+
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM User u WHERE u.email = :email")
+    fun userExistsByEmail(email: String): Boolean
 
 }

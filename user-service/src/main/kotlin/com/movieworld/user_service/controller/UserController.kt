@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/users")
+@Suppress("unused")
 class UserController(
     private val userService: UserServiceImpl
 ) {
-
     @PostMapping("/create")
     fun createUser(@RequestBody user: UserDto): UserDto {
         return userService.createUser(user = user)
@@ -28,10 +28,5 @@ class UserController(
     @GetMapping("/email/{email}")
     fun getUserByEmail(@PathVariable("email") email: String): UserDto {
         return userService.getUserByEmail(email)
-    }
-
-    @GetMapping("/{id}/preferences")
-    fun getUserPreferences(@PathVariable("id") id: Long): UserDto {
-        return userService.getUserPreferences(id)
     }
 }
