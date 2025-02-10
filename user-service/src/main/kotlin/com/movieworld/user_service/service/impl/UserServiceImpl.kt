@@ -36,8 +36,8 @@ class UserServiceImpl(
         val userProfile = UserProfile(
             id = 0,
             user = savedUser,
-            watchHistory = mutableListOf(),
-            ratings = mutableListOf()
+            watchHistory = mutableSetOf(),
+            ratings = mutableSetOf()
         )
         userProfileRepository.save(userProfile)
         return savedUser.toDto()
@@ -49,8 +49,8 @@ class UserServiceImpl(
         user.userProfile?.let {
             val userProfile = userRepository.findUserProfile(it.id)
                 ?: throw UserNotFoundException(message = "User profile not found for id ${it.id}")
-            userProfile.watchHistory = userRepository.findUserProfileWithWatchHistory(it.id)?.watchHistory ?: mutableListOf()
-            userProfile.ratings = userRepository.findUserProfileWithRatings(it.id)?.ratings ?: mutableListOf()
+            userProfile.watchHistory = userRepository.findUserProfileWithWatchHistory(it.id)?.watchHistory ?: mutableSetOf()
+            userProfile.ratings = userRepository.findUserProfileWithRatings(it.id)?.ratings ?: mutableSetOf()
             user.userProfile = userProfile
         }
         return user.toDto().copy(password = "")
@@ -59,6 +59,13 @@ class UserServiceImpl(
     override fun getUserByEmail(email: String): UserDto {
         val user = userRepository.findByEmail(email)
             ?: throw UserNotFoundException(message = "User with email $email, not found")
+        user.userProfile?.let {
+            val userProfile = userRepository.findUserProfile(it.id)
+                ?: throw UserNotFoundException(message = "User profile not found for id ${it.id}")
+            userProfile.watchHistory = userRepository.findUserProfileWithWatchHistory(it.id)?.watchHistory ?: mutableSetOf()
+            userProfile.ratings = userRepository.findUserProfileWithRatings(it.id)?.ratings ?: mutableSetOf()
+            user.userProfile = userProfile
+        }
         return user.toDto().copy(password = "")
     }
 

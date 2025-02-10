@@ -37,7 +37,7 @@ data class UserProfile(
     )
     @BatchSize(size = 10)
     @Fetch(FetchMode.SUBSELECT)
-    var watchHistory: MutableList<WatchHistoryEntry>,
+    var watchHistory: MutableSet<WatchHistoryEntry> = mutableSetOf(),
 
     @OneToMany(
         mappedBy = "userProfile",
@@ -46,7 +46,7 @@ data class UserProfile(
     )
     @BatchSize(size = 10)
     @Fetch(FetchMode.SUBSELECT)
-    var ratings: MutableList<Rating>
+    var ratings: MutableSet<Rating> = mutableSetOf()
 ) {
     fun toDto(): UserProfileDto {
         return UserProfileDto(

@@ -41,7 +41,7 @@ class UserProfileServiceImpl(
                 watchedOn = it.watchedAt,
                 userProfile = userProfile,
             )
-        }?.toMutableList() ?: userProfile.watchHistory
+        }?.toMutableSet() ?: userProfile.watchHistory
 
         val updatedRatings = rating?.let {
             userProfile.ratings + Rating(
@@ -51,7 +51,7 @@ class UserProfileServiceImpl(
                 ratingValue = it.ratingValue,
                 userProfile = userProfile
             )
-        }?.toMutableList() ?: userProfile.ratings
+        }?.toMutableSet() ?: userProfile.ratings
 
         val updatedUserProfile = userProfile.copy(
             watchHistory = updatedWatchHistory,
