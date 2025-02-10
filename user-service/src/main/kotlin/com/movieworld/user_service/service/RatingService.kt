@@ -1,5 +1,7 @@
 package com.movieworld.user_service.service
 
-interface RatingService {
+import com.movieworld.user_service.model.RatingDto
 
+fun interface RatingService {
+    fun getRatingByUserProfileId(userProfileId: Long): List<RatingDto>
 }

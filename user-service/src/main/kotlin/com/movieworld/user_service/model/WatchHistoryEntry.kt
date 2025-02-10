@@ -1,8 +1,7 @@
 package com.movieworld.user_service.model
 
-import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.ForeignKey
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -13,36 +12,24 @@ import java.time.LocalDateTime
 
 @Entity
 @Table(name = "watch_history_entries")
-class WatchHistoryEntry(
+data class WatchHistoryEntry(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long,
+    val id: Long = 0,
 
-    @Column(
-        name = "movie_id",
-        nullable = false
-    )
-    private val movieId: Long,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_profile_id", nullable = false)
+    val userProfile: UserProfile,
 
-    @Column(
-        name = "watched_at",
-        nullable = false
-    )
-    private val watchedAt: LocalDateTime,
+    val movieId: Long,
 
-    @ManyToOne
-    @JoinColumn(
-        name = "user_profile_id",
-        nullable = false,
-        foreignKey = ForeignKey(name = "fk_watch_history_entries_user_profile_id")
-    )
-    private val userProfile: UserProfile
+    val watchedOn: LocalDateTime
 ) {
     fun toDto(): WatchHistoryEntryDto {
         return WatchHistoryEntryDto(
             id = id,
             movieId = movieId,
-            watchedAt = watchedAt,
+            watchedAt = watchedOn
         )
     }
 }

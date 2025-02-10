@@ -4,6 +4,8 @@ import com.movieworld.user_service.exception.UserAlreadyExistsException
 import com.movieworld.user_service.exception.UserNotFoundException
 import com.movieworld.user_service.model.User
 import com.movieworld.user_service.model.UserDto
+import com.movieworld.user_service.model.UserProfile
+import com.movieworld.user_service.repository.UserProfileRepository
 import com.movieworld.user_service.repository.UserRepository
 import com.movieworld.user_service.service.UserService
 import org.springframework.security.core.userdetails.User as SpringUser
@@ -15,7 +17,8 @@ import org.springframework.stereotype.Service
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val userProfileRepository: UserProfileRepository
 ): UserService {
 
     override fun createUser(user: UserDto): UserDto {
@@ -29,11 +32,27 @@ class UserServiceImpl(
             email = user.email,
             password = passwordEncoder.encode(user.password),
         )
-        return userRepository.save(userToSave).toDto()
+        val savedUser = userRepository.save(userToSave)
+        val userProfile = UserProfile(
+            id = 0,
+            user = savedUser,
+            watchHistory = mutableListOf(),
+            ratings = mutableListOf()
+        )
+        userProfileRepository.save(userProfile)
+        return savedUser.toDto()
     }
 
     override fun getUserById(userId: Long): UserDto {
-        val user = userRepository.findByUserId(userId) ?: throw UserNotFoundException(message = "User with id: $userId not found")
+        val user = userRepository.findUserWithProfile(userId)
+            ?: throw UserNotFoundException(message = "User with id: $userId not found")
+        user.userProfile?.let {
+            val userProfile = userRepository.findUserProfile(it.id)
+                ?: throw UserNotFoundException(message = "User profile not found for id ${it.id}")
+            userProfile.watchHistory = userRepository.findUserProfileWithWatchHistory(it.id)?.watchHistory ?: mutableListOf()
+            userProfile.ratings = userRepository.findUserProfileWithRatings(it.id)?.ratings ?: mutableListOf()
+            user.userProfile = userProfile
+        }
         return user.toDto().copy(password = "")
     }
 

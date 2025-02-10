@@ -11,6 +11,9 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
+import org.hibernate.annotations.BatchSize
+import org.hibernate.annotations.Fetch
+import org.hibernate.annotations.FetchMode
 
 @Entity
 @Table(name = "user_profiles")
@@ -29,24 +32,28 @@ data class UserProfile(
 
     @OneToMany(
         mappedBy = "userProfile",
-        cascade = [CascadeType.ALL],
-        fetch = FetchType.LAZY
+        fetch = FetchType.LAZY,
+        cascade = [CascadeType.ALL]
     )
-    val watchHistory: List<WatchHistoryEntry>,
+    @BatchSize(size = 10)
+    @Fetch(FetchMode.SUBSELECT)
+    var watchHistory: MutableList<WatchHistoryEntry>,
 
     @OneToMany(
         mappedBy = "userProfile",
-        cascade = [CascadeType.ALL],
-        fetch = FetchType.LAZY
+        fetch = FetchType.LAZY,
+        cascade = [CascadeType.ALL]
     )
-    val ratings: List<Rating>
+    @BatchSize(size = 10)
+    @Fetch(FetchMode.SUBSELECT)
+    var ratings: MutableList<Rating>
 ) {
     fun toDto(): UserProfileDto {
         return UserProfileDto(
             id = id,
             user = user.toDto(),
-            watchHistory = watchHistory.map { it.toDto() },
-            ratings = ratings.map { it.toDto() }
+            watchHistory = watchHistory.map { it.toDto() }.toMutableList(),
+            ratings = ratings.map { it.toDto() }.toMutableList()
         )
     }
 }

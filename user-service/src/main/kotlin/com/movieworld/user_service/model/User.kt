@@ -41,7 +41,7 @@ data class User(
         cascade = [CascadeType.ALL],
         fetch = FetchType.LAZY,
     )
-    val userProfile: UserProfile? = null
+    var userProfile: UserProfile? = null
 ) {
     fun toDto(): UserDto {
         return UserDto(
