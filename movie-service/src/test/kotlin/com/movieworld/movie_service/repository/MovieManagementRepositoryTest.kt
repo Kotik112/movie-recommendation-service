@@ -4,13 +4,12 @@ import com.movieworld.movie_service.model.Movie
 import com.movieworld.movie_service.util.PostgresTestContainer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@TestInstance(TestInstance.Lifecycle.PER_METHOD)
+
 class MovieManagementRepositoryTest: PostgresTestContainer() {
 
     @Autowired

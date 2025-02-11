@@ -71,7 +71,8 @@ class UserServiceImpl(
 
 
     override fun updateUser(userToUpdate: UserDto): UserDto {
-        val existingUser = userRepository.findByEmail(userToUpdate.email) ?: throw UserNotFoundException(message = "User not found")
+        val existingUser = userRepository.findByEmail(userToUpdate.email)
+            ?: throw UserNotFoundException(message = "User with email: ${userToUpdate.email} not found")
         val updatedUser = existingUser.copy(
             firstName = userToUpdate.firstName,
             lastName = userToUpdate.lastName,

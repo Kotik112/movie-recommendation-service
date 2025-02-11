@@ -18,7 +18,7 @@ import jakarta.validation.constraints.Size
 data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long,
+    val id: Long? = null,
 
     @Column(name = "first_name", nullable = false)
     @NotBlank(message = "First name is required")
@@ -45,11 +45,13 @@ data class User(
 ) {
     fun toDto(): UserDto {
         return UserDto(
-            id = id,
+            id = id ?: 0,
             firstName = firstName,
             lastName = lastName,
             email = email,
             password = password,
+            watchHistory = userProfile?.watchHistory?.map { it.toDto() }?.toMutableSet() ?: mutableSetOf(),
+            ratings = userProfile?.ratings?.map { it.toDto() }?.toMutableSet() ?: mutableSetOf()
         )
     }
 }

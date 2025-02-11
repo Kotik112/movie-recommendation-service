@@ -1,4 +1,5 @@
-val jwt_version: String = "0.11.5"
+val jwtVersion: String = "0.11.5"
+val tcVersion = "1.20.4"
 
 plugins {
 	kotlin("jvm") version "1.9.25"
@@ -34,16 +35,20 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("io.jsonwebtoken:jjwt-api:$jwt_version")
-	runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwt_version")
-	runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwt_version")
+	implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtVersion")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
+	runtimeOnly("org.postgresql:postgresql")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.springframework.security:spring-security-test")
+//	testImplementation("org.mockito:mockito-inline:5.2.0")
+	testImplementation("org.testcontainers:junit-jupiter:$tcVersion")
+	testImplementation("org.testcontainers:testcontainers:$tcVersion")
+	testImplementation("org.testcontainers:postgresql:$tcVersion")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -64,4 +69,5 @@ allOpen {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	jvmArgs("-XX:+EnableDynamicAgentLoading")
 }

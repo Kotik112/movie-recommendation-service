@@ -56,4 +56,8 @@ data class UserProfile(
             ratings = ratings.map { it.toDto() }.toMutableList()
         )
     }
+
+    override fun toString(): String {
+        return "UserProfile(id=$id)"
+    }
 }
