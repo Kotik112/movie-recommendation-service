@@ -20,7 +20,7 @@ import org.hibernate.annotations.FetchMode
 data class UserProfile(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long = 0,
 
     @OneToOne
     @JoinColumn(

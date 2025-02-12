@@ -26,7 +26,6 @@ class UserServiceImpl(
             throw UserAlreadyExistsException(message = "User with email ${user.email} already exists")
         }
         val userToSave = User(
-            id = 0,
             firstName = user.firstName,
             lastName = user.lastName,
             email = user.email,
@@ -34,7 +33,6 @@ class UserServiceImpl(
         )
         val savedUser = userRepository.save(userToSave)
         val userProfile = UserProfile(
-            id = 0,
             user = savedUser,
             watchHistory = mutableSetOf(),
             ratings = mutableSetOf()

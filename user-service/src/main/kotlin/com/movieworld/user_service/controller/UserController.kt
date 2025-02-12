@@ -22,11 +22,11 @@ class UserController(
 
     @GetMapping("/{id}")
     fun getUserById(@PathVariable("id") id: Long): UserDto {
-        return userService.getUserById(id)
+        return userService.getUserById(userId = id)
     }
 
     @GetMapping("/email/{email}")
     fun getUserByEmail(@PathVariable("email") email: String): UserDto {
-        return userService.getUserByEmail(email)
+        return userService.getUserByEmail(email = email)
     }
 }
