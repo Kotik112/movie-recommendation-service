@@ -20,7 +20,7 @@ class AuthenticationService(
         return try {
             authenticationManager.authenticate(UsernamePasswordAuthenticationToken(email, password))
             val userDetails: UserDetails = userDetailsService.loadUserByUsername(email)
-            jwtUtil.generateToken(userDetails.username)
+            jwtUtil.generateToken(userDetails)
         }
         catch (e: Exception) {
             "Invalid credentials. Please try again."
