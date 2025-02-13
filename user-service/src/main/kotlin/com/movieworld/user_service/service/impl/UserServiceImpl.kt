@@ -22,7 +22,8 @@ class UserServiceImpl(
 ): UserService {
 
     /**
-    * Create a new user in the users table
+    * Create a new user in the users table, also create a user profile for the user with
+    * empty watch history and ratings.
     *
     * @param user: UserDto - the user to create
     * @return UserDto - the created user
@@ -36,6 +37,7 @@ class UserServiceImpl(
             lastName = user.lastName,
             email = user.email,
             password = passwordEncoder.encode(user.password),
+            role = user.role
         )
         val savedUser = userRepository.save(userToSave)
         val userProfile = UserProfile(
@@ -87,7 +89,7 @@ class UserServiceImpl(
             password = if (userToUpdate.password.isNotEmpty()) passwordEncoder.encode(userToUpdate.password) else existingUser.password
         )
 
-        return userRepository.save(updatedUser).toDto()
+        return userRepository.save(updatedUser).toDto().copy(password = "")
     }
 
     /**
@@ -99,6 +101,12 @@ class UserServiceImpl(
         userRepository.deleteById(userId)
     }
 
+    /**
+     * Load a user by their email for Spring Security
+     *
+     * @param email: String - the email of the user to load
+     * @return UserDetails - the user with the given email
+     */
     override fun loadUserByUsername(email: String): UserDetails {
         val user = userRepository.findByEmail(email = email)
             ?: throw UsernameNotFoundException("User not found with email: $email")

@@ -1,7 +1,7 @@
 package com.movieworld.user_service.service.authentication
 
 import com.movieworld.user_service.config.JwtUtil
-import com.movieworld.user_service.model.UserDto
+import com.movieworld.user_service.model.LoginDto
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UserDetails
@@ -14,11 +14,16 @@ class AuthenticationService(
     private val userDetailsService: UserDetailsService,
     private val authenticationManager: AuthenticationManager
 ) {
-    fun authenticate(userDto: UserDto): String {
-        val email: String = userDto.email
-        val password: String = userDto.password
-        authenticationManager.authenticate(UsernamePasswordAuthenticationToken(email, password))
-        val userDetails: UserDetails = userDetailsService.loadUserByUsername(email)
-        return jwtUtil.generateToken(userDetails.username)
+    fun authenticate(loginDto: LoginDto): String {
+        val email: String = loginDto.email
+        val password: String = loginDto.password
+        return try {
+            authenticationManager.authenticate(UsernamePasswordAuthenticationToken(email, password))
+            val userDetails: UserDetails = userDetailsService.loadUserByUsername(email)
+            jwtUtil.generateToken(userDetails.username)
+        }
+        catch (e: Exception) {
+            "Invalid credentials. Please try again."
+        }
     }
 }

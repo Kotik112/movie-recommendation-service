@@ -34,9 +34,9 @@ class JwtRequestFilter(
 
             if (jwtUtil.validateToken(jwt!!, userDetails.username)) {
                 val usernamePasswordAuthenticationToken = UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.authorities
+                    /* principal = */ userDetails,
+                    /* credentials = */ null,
+                    /* authorities = */ userDetails.authorities
                 )
                 usernamePasswordAuthenticationToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication = usernamePasswordAuthenticationToken

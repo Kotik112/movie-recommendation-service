@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@Suppress("unused")
 class SecurityConfig(
     private val passwordEncoder: PasswordEncoder,
     private val jwtUtil: JwtUtil,
@@ -29,6 +30,7 @@ class SecurityConfig(
                 auth
                     .requestMatchers("/api/v1/users/**").permitAll()
                     .requestMatchers("/api/v1/userProfile/**").permitAll()
+                    .requestMatchers("/api/v1/auth").permitAll()
                     .anyRequest().authenticated()
             }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
