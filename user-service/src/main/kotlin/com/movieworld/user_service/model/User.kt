@@ -2,6 +2,8 @@ package com.movieworld.user_service.model
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -19,11 +21,11 @@ data class User(
 
     @Column(name = "first_name", nullable = false)
     @NotBlank(message = "First name is required")
-    private val firstName: String,
+    val firstName: String,
 
     @Column(name = "last_name", nullable = false)
     @NotBlank(message = "Last name is required")
-    private val lastName: String,
+    val lastName: String,
 
     @Column(name = "email", nullable = false, unique = true)
     @Email(message = "Invalid email")
@@ -32,14 +34,19 @@ data class User(
     @Column(name = "password", nullable = false)
     @Size(min = 8, message = "Password must be at least 8 characters long")
     val password: String,
+
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    val role: Role
 ) {
     fun toDto(): UserDto {
         return UserDto(
-            id = id ?: 0,
+            id = id ?: -1,
             firstName = firstName,
             lastName = lastName,
             email = email,
-            password = password
+            password = password,
+            role = role
         )
     }
 

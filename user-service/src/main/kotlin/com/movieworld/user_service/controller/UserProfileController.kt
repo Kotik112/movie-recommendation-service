@@ -4,6 +4,7 @@ import com.movieworld.user_service.model.RatingDto
 import com.movieworld.user_service.model.UserProfileDto
 import com.movieworld.user_service.model.WatchHistoryEntryDto
 import com.movieworld.user_service.service.impl.UserProfileServiceImpl
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
