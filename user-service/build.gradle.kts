@@ -12,6 +12,8 @@ plugins {
 group = "com.movieworld"
 version = "0.0.1-SNAPSHOT"
 
+extra["springCloudVersion"] = "2024.0.0"
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
@@ -34,6 +36,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtVersion")
@@ -45,11 +48,16 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.springframework.security:spring-security-test")
-//	testImplementation("org.mockito:mockito-inline:5.2.0")
 	testImplementation("org.testcontainers:junit-jupiter:$tcVersion")
 	testImplementation("org.testcontainers:testcontainers:$tcVersion")
 	testImplementation("org.testcontainers:postgresql:$tcVersion")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+dependencyManagement {
+	imports {
+		mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+	}
 }
 
 kotlin {

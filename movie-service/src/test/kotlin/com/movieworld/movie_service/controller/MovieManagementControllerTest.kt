@@ -39,7 +39,6 @@ class MovieManagementControllerTest(
             description = "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers."
         )
         val savedMovie = saveMovie(movieDto)
-        println(savedMovie)
 
         // when
         val result = mockMvc.perform(
@@ -172,7 +171,7 @@ class MovieManagementControllerTest(
 
         // when
         mockMvc.perform(
-            MockMvcRequestBuilders.put("/api/v1/movies/update/{title}", "The Matrix")
+            MockMvcRequestBuilders.put("/api/v1/movies/update/{id}", "1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedMovieDto))
                 .accept(MediaType.APPLICATION_JSON)
@@ -254,6 +253,56 @@ class MovieManagementControllerTest(
             .andExpect(jsonPath("$.message").value("Movie with id 1 not found"))
     }
 
+    @Test
+    fun `Test movieExistsById`() {
+        // given
+        val movieDto = MovieDto(
+            title = "The Matrix",
+            genre = "Action",
+            releaseDate = LocalDate.of(1999, 3, 31),
+            director = "Lana Wachowski, Lilly Wachowski",
+            description = "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war " +
+                    "against its controllers."
+        )
+        val savedMovie = saveMovie(movieDto)
+
+        // when
+        val result = mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/v1/movies/existsById/${savedMovie?.id}")
+                .accept(MediaType.APPLICATION_JSON))
+
+        // then
+        result.andExpect(status().isOk)
+            .andExpect(jsonPath("$").value("true"))
+    }
+
+    @Test
+    fun `Test movieExistsByTitle`() {
+        // given
+        val movieDto = MovieDto(
+            title = "The Matrix",
+            genre = "Action",
+            releaseDate = LocalDate.of(1999, 3, 31),
+            director = "Lana Wachowski, Lilly Wachowski",
+            description = "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war " +
+                    "against its controllers."
+        )
+        saveMovie(movieDto)
+
+        // when
+        val result = mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/v1/movies/existsByTitle/{title}", "The Matrix")
+                .accept(MediaType.APPLICATION_JSON))
+
+        // then
+        result.andExpect(status().isOk)
+            .andExpect(jsonPath("$").value("true"))
+    }
+
+
+    /*
+    * Helper methods
+     */
     private fun saveMovie(movieDto: MovieDto): MovieDto? {
         val json = movieDto.toJson()
         return mockMvc.perform(

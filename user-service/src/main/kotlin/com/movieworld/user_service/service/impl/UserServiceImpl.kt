@@ -21,8 +21,14 @@ class UserServiceImpl(
     private val userProfileRepository: UserProfileRepository
 ): UserService {
 
+    /**
+    * Create a new user in the users table
+    *
+    * @param user: UserDto - the user to create
+    * @return UserDto - the created user
+     */
     override fun createUser(user: UserDto): UserDto {
-        if (userRepository.userExistsByEmail(user.email)) {
+        if (userRepository.userExistsByEmail(email = user.email)) {
             throw UserAlreadyExistsException(message = "User with email ${user.email} already exists")
         }
         val userToSave = User(
@@ -41,33 +47,36 @@ class UserServiceImpl(
         return savedUser.toDto()
     }
 
+    /**
+    * Get a user by their id
+    *
+    * @param userId: Long - the id of the user to get
+    * @return UserDto - the user with the given id
+     */
     override fun getUserById(userId: Long): UserDto {
-        val user = userRepository.findUserWithProfile(userId)
+        val user = userRepository.findByUserId(userId)
             ?: throw UserNotFoundException(message = "User with id: $userId not found")
-        user.userProfile?.let {
-            val userProfile = userRepository.findUserProfile(it.id)
-                ?: throw UserNotFoundException(message = "User profile not found for id ${it.id}")
-            userProfile.watchHistory = userRepository.findUserProfileWithWatchHistory(it.id)?.watchHistory ?: mutableSetOf()
-            userProfile.ratings = userRepository.findUserProfileWithRatings(it.id)?.ratings ?: mutableSetOf()
-            user.userProfile = userProfile
-        }
         return user.toDto().copy(password = "")
     }
 
+    /**
+    * Get a user by their email
+    *
+    * @param email: String - the email of the user to get
+    * @return UserDto - the user with the given email
+     */
     override fun getUserByEmail(email: String): UserDto {
         val user = userRepository.findByEmail(email)
             ?: throw UserNotFoundException(message = "User with email $email, not found")
-        user.userProfile?.let {
-            val userProfile = userRepository.findUserProfile(it.id)
-                ?: throw UserNotFoundException(message = "User profile not found for id ${it.id}")
-            userProfile.watchHistory = userRepository.findUserProfileWithWatchHistory(it.id)?.watchHistory ?: mutableSetOf()
-            userProfile.ratings = userRepository.findUserProfileWithRatings(it.id)?.ratings ?: mutableSetOf()
-            user.userProfile = userProfile
-        }
         return user.toDto().copy(password = "")
     }
 
-
+    /**
+    * Update a user in the users table
+    *
+    * @param userToUpdate: UserDto - the user to update
+    * @return UserDto - the updated user
+     */
     override fun updateUser(userToUpdate: UserDto): UserDto {
         val existingUser = userRepository.findByEmail(userToUpdate.email)
             ?: throw UserNotFoundException(message = "User with email: ${userToUpdate.email} not found")
@@ -81,19 +90,30 @@ class UserServiceImpl(
         return userRepository.save(updatedUser).toDto()
     }
 
+    /**
+    * Delete a user from the users table
+    *
+    * @param userId: Long - the id of the user to delete
+     */
     override fun deleteUser(userId: Long) {
         userRepository.deleteById(userId)
     }
 
     override fun loadUserByUsername(email: String): UserDetails {
-        val user = userRepository.findByEmail(email)
+        val user = userRepository.findByEmail(email = email)
             ?: throw UsernameNotFoundException("User not found with email: $email")
         return SpringUser(
             user.email, user.password, emptyList()
         )
     }
 
+    /**
+     * Check if a user with the given email exists
+     *
+     * @param email: String - the email to check
+     * @return Boolean - true if a user with the given email exists, false otherwise
+     */
     override fun existsByEmail(email: String): Boolean {
-        return userRepository.userExistsByEmail(email)
+        return userRepository.userExistsByEmail(email = email)
     }
 }

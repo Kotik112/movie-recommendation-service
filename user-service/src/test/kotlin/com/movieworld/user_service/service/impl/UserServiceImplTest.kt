@@ -33,7 +33,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    fun `test createUser`() {
+    fun `Test createUser`() {
         val userService = UserServiceImpl(
             userRepository = userRepository,
             passwordEncoder = passwordEncoder,
@@ -59,8 +59,6 @@ class UserServiceImplTest {
             lastName = "Doe",
             email = "test@mail.com",
             password = "password",
-            watchHistory = mutableSetOf(),
-            ratings = mutableSetOf()
         )
         `when`(userRepository.userExistsByEmail("test@mail.com")).thenReturn(false)
         `when`(userRepository.save(any<User>())).thenReturn(user)
@@ -72,7 +70,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    fun `test getUserById`() {
+    fun `Test getUserById`() {
         val userService = UserServiceImpl(
             userRepository = userRepository,
             passwordEncoder = passwordEncoder,
@@ -85,13 +83,9 @@ class UserServiceImplTest {
             email = "test@mail.com",
             password = "password",
         )
-        val userProfile = UserProfile(
-            id = 1,
-            user = user,
-            watchHistory = mutableSetOf(),
-            ratings = mutableSetOf()
-        )
-        user.userProfile = userProfile
+
+        `when`(userRepository.findByUserId(1)).thenReturn(user)
+
         // Expected UserDto
         val userDto = UserDto(
             id = 1,
@@ -99,20 +93,14 @@ class UserServiceImplTest {
             lastName = "Doe",
             email = "test@mail.com",
             password = "",
-            watchHistory = mutableSetOf(),
-            ratings = mutableSetOf()
         )
-        `when`(userRepository.findUserWithProfile(1)).thenReturn(user)
-        `when`(userRepository.findUserProfile(1)).thenReturn(userProfile)
-        `when`(userRepository.findUserProfileWithWatchHistory(1)).thenReturn(userProfile)
-        `when`(userRepository.findUserProfileWithRatings(1)).thenReturn(userProfile)
 
         val result = userService.getUserById(1)
         assertEquals(userDto, result)
     }
 
     @Test
-    fun `test getUserByEmail`() {
+    fun `Test getUserByEmail`() {
         val userService = UserServiceImpl(
             userRepository = userRepository,
             passwordEncoder = passwordEncoder,
@@ -125,13 +113,7 @@ class UserServiceImplTest {
             email = "test@mail.com",
             password = "password",
         )
-        val userProfile = UserProfile(
-            id = 1,
-            user = user,
-            watchHistory = mutableSetOf(),
-            ratings = mutableSetOf()
-        )
-        user.userProfile = userProfile
+
         // Expected UserDto
         val userDto = UserDto(
             id = 1,
@@ -139,21 +121,16 @@ class UserServiceImplTest {
             lastName = "Doe",
             email = "test@mail.com",
             password = "",
-            watchHistory = mutableSetOf(),
-            ratings = mutableSetOf()
         )
 
         `when`(userRepository.findByEmail(anyString())).thenReturn(user)
-        `when`(userRepository.findUserProfile(1)).thenReturn(userProfile)
-        `when`(userRepository.findUserProfileWithWatchHistory(1)).thenReturn(userProfile)
-        `when`(userRepository.findUserProfileWithRatings(1)).thenReturn(userProfile)
 
         val result = userService.getUserByEmail(user.email)
         assertEquals(userDto, result)
     }
 
     @Test
-    fun `test updateUser`() {
+    fun `Test updateUser`() {
         val userService = UserServiceImpl(
             userRepository = userRepository,
             passwordEncoder = passwordEncoder,
@@ -172,13 +149,7 @@ class UserServiceImplTest {
             email = "newEmail@gmail.com",
             password = "newPassword"
         )
-        val userProfile = UserProfile(
-            id = 1,
-            user = user,
-            watchHistory = mutableSetOf(),
-            ratings = mutableSetOf()
-        )
-        user.userProfile = userProfile
+
         // Expected UserDto
         val userDto = UserDto(
             id = 1,
@@ -186,8 +157,6 @@ class UserServiceImplTest {
             lastName = "Doe",
             email = "newEmail@gmail.com",
             password = "newPassword",
-            watchHistory = mutableSetOf(),
-            ratings = mutableSetOf()
         )
 
         `when`(userRepository.findByEmail(anyString())).thenReturn(user)
@@ -198,7 +167,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    fun `test deleteUser`() {
+    fun `Test deleteUser`() {
         val userService = UserServiceImpl(
             userRepository = userRepository,
             passwordEncoder = passwordEncoder,
@@ -211,17 +180,23 @@ class UserServiceImplTest {
             email = "test@mail.com",
             password = "password",
         )
-        val userProfile = UserProfile(
-            id = 1,
-            user = user,
-            watchHistory = mutableSetOf(),
-            ratings = mutableSetOf()
-        )
-        user.userProfile = userProfile
 
         `when`(userRepository.findByEmail(anyString())).thenReturn(user)
-        user.id?.let { userService.deleteUser(it) }
 
-        user.id?.let { verify(userRepository).deleteById(it) }
+        userService.deleteUser(1)
+
+        verify(userRepository, times(1)).deleteById(1)
+    }
+
+    @Test
+    fun `Test existsByEmail`() {
+        val userService = UserServiceImpl(
+            userRepository = userRepository,
+            passwordEncoder = passwordEncoder,
+            userProfileRepository = userProfileRepository
+        )
+        `when`(userRepository.userExistsByEmail(anyString())).thenReturn(true)
+        val result = userService.existsByEmail("test@mail.com")
+        assertEquals(true, result)
     }
 }

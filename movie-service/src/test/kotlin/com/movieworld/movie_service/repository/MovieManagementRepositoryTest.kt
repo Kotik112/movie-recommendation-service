@@ -5,34 +5,16 @@ import com.movieworld.movie_service.util.PostgresTestContainer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.annotation.DirtiesContext
 import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class MovieManagementRepositoryTest: PostgresTestContainer() {
 
     @Autowired
     private lateinit var movieManagementRepository: MovieManagementRepository
-
-    private fun saveMovies() {
-        movieManagementRepository.deleteAll()
-        val movie1 = Movie(
-            title = "The Shawshank Redemption",
-            genre = "Drama",
-            releaseDate = LocalDate.of(1994, 10, 14),
-            director = "Frank Darabont",
-            description = "Two imprisoned"
-        )
-        val movie2 = Movie(
-            title = "The Godfather",
-            genre = "Crime",
-            releaseDate = LocalDate.of(1972, 3, 24),
-            director = "Francis Ford Coppola",
-            description = "The aging patriarch"
-        )
-        movieManagementRepository.saveAll(listOf(movie1, movie2))
-    }
 
     @Test
     fun `test getAllMovies`() {
@@ -71,16 +53,28 @@ class MovieManagementRepositoryTest: PostgresTestContainer() {
 
     @Test
     fun `Test existsByTitle`() {
-        val exists = movieManagementRepository.existsByTitle("The Shawshank Redemption")
-        assertTrue(exists)
+        saveMovies()
+        val firstMovieExists = movieManagementRepository.existsByTitle("The Shawshank Redemption")
+        val secondMovieExists = movieManagementRepository.existsByTitle("The Godfather")
+        assertTrue(firstMovieExists)
+        assertTrue(secondMovieExists)
+    }
+
+    @Test
+    fun `Test existsById`() {
+        saveMovies()
+        val firstMovieExists = movieManagementRepository.existsById(1)
+        val secondMovieExists = movieManagementRepository.existsById(2)
+        assertTrue(firstMovieExists)
+        assertTrue(secondMovieExists)
     }
 
     @Test
     fun `Test updateMovie`() {
         saveMovies()
         val updated = movieManagementRepository.updateMovie(
-            currentTitle = "The Shawshank Redemption",
-            title = "The Shawshank Redemption",
+            movieId = 1,
+            title = "The Shawshank Redemption 2",
             genre = "Drama",
             releaseDate = LocalDate.of(1994, 10, 14),
             director = "New Director",
@@ -98,5 +92,24 @@ class MovieManagementRepositoryTest: PostgresTestContainer() {
         val movies = movieManagementRepository.findAllMovies()
         assertThat(movies).hasSize(1)
         assertEquals("The Godfather", movies[0].title)
+    }
+
+    private fun saveMovies() {
+        movieManagementRepository.deleteAll()
+        val movie1 = Movie(
+            title = "The Shawshank Redemption",
+            genre = "Drama",
+            releaseDate = LocalDate.of(1994, 10, 14),
+            director = "Frank Darabont",
+            description = "Two imprisoned"
+        )
+        val movie2 = Movie(
+            title = "The Godfather",
+            genre = "Crime",
+            releaseDate = LocalDate.of(1972, 3, 24),
+            director = "Francis Ford Coppola",
+            description = "The aging patriarch"
+        )
+        movieManagementRepository.saveAll(listOf(movie1, movie2))
     }
 }

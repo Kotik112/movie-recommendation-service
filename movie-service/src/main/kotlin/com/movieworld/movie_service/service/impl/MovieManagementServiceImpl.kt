@@ -34,12 +34,12 @@ class MovieManagementServiceImpl(
         return movieManagementRepository.save(movie).toDto()
     }
 
-    override fun updateMovie(currentTitle: String, movieDto: MovieDto): Boolean {
-        if (!movieManagementRepository.existsByTitle(currentTitle)) {
-            throw MovieNotFoundException(message = "Movie with title $currentTitle not found")
+    override fun updateMovie(movieId: Long, movieDto: MovieDto): Boolean {
+        if (!movieManagementRepository.existsById(movieId)) {
+            throw MovieNotFoundException(message = "Movie with id $movieId not found")
         }
         return movieManagementRepository.updateMovie(
-            currentTitle = currentTitle,
+            movieId = movieId,
             title = movieDto.title,
             genre = movieDto.genre,
             releaseDate = movieDto.releaseDate,
@@ -65,5 +65,13 @@ class MovieManagementServiceImpl(
 
     override fun getAllMovie(): List<MovieDto> {
         return movieManagementRepository.findAllMovies().map { it.toDto() }
+    }
+
+    override fun movieExistsById(movieId: Long): Boolean {
+        return movieManagementRepository.existsById(movieId)
+    }
+
+    override fun movieExistsByTitle(title: String): Boolean {
+        return movieManagementRepository.existsByTitle(title)
     }
 }

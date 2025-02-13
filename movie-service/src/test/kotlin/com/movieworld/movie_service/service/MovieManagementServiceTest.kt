@@ -18,6 +18,8 @@ import org.mockito.MockitoAnnotations
 import org.mockito.Mockito.`when`
 import java.time.LocalDate
 import java.util.*
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class MovieManagementServiceTest {
 
@@ -113,9 +115,9 @@ class MovieManagementServiceTest {
             description = "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers."
         )
 
-        `when`(movieManagementRepository.existsByTitle("The Matrix")).thenReturn(true)
+        `when`(movieManagementRepository.existsById(1)).thenReturn(true)
         `when`(movieManagementRepository.updateMovie(
-            currentTitle = "The Matrix",
+            movieId = 1,
             title = "The Matrix",
             genre = "Action",
             releaseDate = LocalDate.of(1999, 3, 31),
@@ -123,8 +125,7 @@ class MovieManagementServiceTest {
             description = "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers."
         )).thenReturn(1)
 
-        val actual = movieManagementService.updateMovie("The Matrix", movie.toDto())
-        assertEquals(true, actual)
+        assertTrue { movieManagementService.updateMovie(1, movie.toDto()) }
     }
 
     @Test
@@ -140,7 +141,7 @@ class MovieManagementServiceTest {
         `when`(movieManagementRepository.existsByTitle("The Matrix")).thenReturn(false)
 
         assertThrows<MovieNotFoundException> {
-            movieManagementService.updateMovie("The Matrix", movie.toDto())
+            movieManagementService.updateMovie(1, movie.toDto())
         }
     }
 
@@ -211,6 +212,41 @@ class MovieManagementServiceTest {
         assertEquals(2, movies.size)
         assertEquals("The Shawshank Redemption", movies[0].title)
         assertEquals("The Godfather", movies[1].title)
+    }
 
+    @Test
+    fun `test movieExistsById`() {
+        `when`(movieManagementRepository.existsById(1)).thenReturn(true)
+
+        assertTrue {
+            movieManagementService.movieExistsById(1)
+        }
+    }
+
+    @Test
+    fun `test movieExistsById should return false`() {
+        `when`(movieManagementRepository.existsById(1)).thenReturn(false)
+
+        assertFalse {
+            movieManagementService.movieExistsById(1)
+        }
+    }
+
+    @Test
+    fun `test movieExistsByTitle`() {
+        `when`(movieManagementRepository.existsByTitle("The Matrix")).thenReturn(true)
+
+        assertTrue {
+            movieManagementService.movieExistsByTitle("The Matrix")
+        }
+    }
+
+    @Test
+    fun `test movieExistsByTitle should return false`() {
+        `when`(movieManagementRepository.existsByTitle("The Matrix")).thenReturn(false)
+
+        assertFalse {
+            movieManagementService.movieExistsByTitle("The Matrix")
+        }
     }
 }

@@ -2,9 +2,11 @@ package com.movieworld.user_service.controller
 
 import com.movieworld.user_service.model.UserDto
 import com.movieworld.user_service.service.impl.UserServiceImpl
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -28,5 +30,15 @@ class UserController(
     @GetMapping("/email/{email}")
     fun getUserByEmail(@PathVariable("email") email: String): UserDto {
         return userService.getUserByEmail(email = email)
+    }
+
+    @PutMapping("/update")
+    fun updateUser(@RequestBody userToUpdate: UserDto): UserDto {
+        return userService.updateUser(userToUpdate = userToUpdate)
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteUser(@PathVariable("id") id: Long) {
+        userService.deleteUser(userId = id)
     }
 }

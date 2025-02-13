@@ -26,13 +26,13 @@ import java.time.LocalDateTime
 class Rating(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long,
+    val id: Long = 0,
 
     @Column(
         name = "movie_id",
         nullable = false
     )
-    private val movieId: Long,
+    val movieId: Long,
 
     @Column(
         name = "rating_value",
@@ -40,13 +40,13 @@ class Rating(
     )
     @Min(0)
     @Max(10)
-    private val ratingValue: Int,
+    val ratingValue: Int,
 
     @Column(
         name = "rated_at",
         nullable = false
     )
-    private val ratedAt: LocalDateTime,
+    val ratedAt: LocalDateTime,
 
     @ManyToOne
     @JoinColumn(
@@ -54,7 +54,7 @@ class Rating(
         nullable = false,
         foreignKey = ForeignKey(name = "fk_ratings_user_profile_id")
     )
-    private val userProfile: UserProfile
+    val userProfile: UserProfile
 ) {
     fun toDto(): RatingDto {
         return RatingDto(

@@ -35,7 +35,7 @@ data class UserProfile(
         fetch = FetchType.LAZY,
         cascade = [CascadeType.ALL]
     )
-    @BatchSize(size = 10)
+    @BatchSize(size = 20)
     @Fetch(FetchMode.SUBSELECT)
     var watchHistory: MutableSet<WatchHistoryEntry> = mutableSetOf(),
 
@@ -44,7 +44,7 @@ data class UserProfile(
         fetch = FetchType.LAZY,
         cascade = [CascadeType.ALL]
     )
-    @BatchSize(size = 10)
+    @BatchSize(size = 20)
     @Fetch(FetchMode.SUBSELECT)
     var ratings: MutableSet<Rating> = mutableSetOf()
 ) {
@@ -59,5 +59,9 @@ data class UserProfile(
 
     override fun toString(): String {
         return "UserProfile(id=$id)"
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
     }
 }

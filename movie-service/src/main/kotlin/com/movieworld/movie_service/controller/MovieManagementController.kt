@@ -19,12 +19,12 @@ class MovieManagementController(
 ) {
     @GetMapping("/id/{id}")
     fun getMovieById(@PathVariable("id") id: Long): MovieDto {
-        return movieManagementService.findMovieById(id)
+        return movieManagementService.findMovieById(id = id)
     }
 
     @GetMapping("/{title}")
     fun getMovie(@PathVariable("title") title: String): MovieDto {
-        return movieManagementService.getMovie(title)
+        return movieManagementService.getMovie(title = title)
     }
 
     @GetMapping("/all")
@@ -34,16 +34,26 @@ class MovieManagementController(
 
     @PostMapping
     fun addMovie(@RequestBody movieDto: MovieDto): MovieDto {
-        return movieManagementService.addMovie(movieDto)
+        return movieManagementService.addMovie(movieDto = movieDto)
     }
 
-    @PutMapping("/update/{title}")
-    fun updateMovie(@PathVariable("title") title: String, @RequestBody movieDto: MovieDto): Boolean {
-        return movieManagementService.updateMovie(title, movieDto)
+    @PutMapping("/update/{id}")
+    fun updateMovie(@PathVariable("id") movieId: Long, @RequestBody movieDto: MovieDto): Boolean {
+        return movieManagementService.updateMovie(movieId = movieId, movieDto = movieDto)
     }
 
     @DeleteMapping("/{title}")
     fun deleteMovie(@PathVariable("title") title: String): Boolean {
-        return movieManagementService.deleteMovie(title)
+        return movieManagementService.deleteMovie(title = title)
+    }
+
+    @GetMapping("/existsById/{id}")
+    fun movieExistsById(@PathVariable("id") movieId: Long): Boolean {
+        return movieManagementService.movieExistsById(movieId = movieId)
+    }
+
+    @GetMapping("/existsByTitle/{title}")
+    fun movieExistsByTitle(@PathVariable("title") title: String): Boolean {
+        return movieManagementService.movieExistsByTitle(title = title)
     }
 }

@@ -1,13 +1,10 @@
 package com.movieworld.user_service.model
 
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
@@ -35,13 +32,6 @@ data class User(
     @Column(name = "password", nullable = false)
     @Size(min = 8, message = "Password must be at least 8 characters long")
     val password: String,
-
-    @OneToOne(
-        mappedBy = "user",
-        cascade = [CascadeType.ALL],
-        fetch = FetchType.LAZY,
-    )
-    var userProfile: UserProfile? = null
 ) {
     fun toDto(): UserDto {
         return UserDto(
@@ -49,9 +39,12 @@ data class User(
             firstName = firstName,
             lastName = lastName,
             email = email,
-            password = password,
-            watchHistory = userProfile?.watchHistory?.map { it.toDto() }?.toMutableSet() ?: mutableSetOf(),
-            ratings = userProfile?.ratings?.map { it.toDto() }?.toMutableSet() ?: mutableSetOf()
+            password = password
         )
+    }
+
+    // TODO: Look to remove this method
+    override fun hashCode(): Int {
+        return id.hashCode()
     }
 }

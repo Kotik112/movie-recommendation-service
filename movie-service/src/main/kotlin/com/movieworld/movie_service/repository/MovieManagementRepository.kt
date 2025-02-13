@@ -22,14 +22,17 @@ interface MovieManagementRepository: JpaRepository<Movie, Long> {
     @Query("SELECT * FROM movie", nativeQuery = true)
     fun findAllMovies(): List<Movie>
 
+    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END FROM Movie m WHERE m.id = :id")
+    fun existsById(@Param("id") title: String): Boolean
+
     @Query("SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END FROM Movie m WHERE m.title = :title")
     fun existsByTitle(@Param("title") title: String): Boolean
 
     @Transactional
     @Modifying
-    @Query("UPDATE movie SET title = :title, genre = :genre, release_date = :releaseDate, director = :director, description = :description WHERE title = :currentTitle", nativeQuery = true)
+    @Query("UPDATE movie SET title = :title, genre = :genre, release_date = :releaseDate, director = :director, description = :description WHERE id = :movieId", nativeQuery = true)
     fun updateMovie(
-        @Param("currentTitle") currentTitle: String,
+        @Param("movieId") movieId: Long,
         @Param("title") title: String,
         @Param("genre") genre: String,
         @Param("releaseDate") releaseDate: LocalDate,
