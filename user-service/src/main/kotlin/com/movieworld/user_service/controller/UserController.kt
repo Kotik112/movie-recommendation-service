@@ -1,7 +1,8 @@
 package com.movieworld.user_service.controller
 
 import com.movieworld.user_service.model.UserDto
-import com.movieworld.user_service.service.impl.UserServiceImpl
+import com.movieworld.user_service.service.UserService
+import com.movieworld.user_service.service.authentication.AuthenticationService
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -15,11 +16,17 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/v1/users")
 @Suppress("unused")
 class UserController(
-    private val userService: UserServiceImpl
+    private val userService: UserService,
+    private val authenticationService: AuthenticationService
 ) {
     @PostMapping("/create")
     fun createUser(@RequestBody user: UserDto): UserDto {
         return userService.createUser(user = user)
+    }
+
+    @GetMapping("/login")
+    fun login(@RequestBody userDto: UserDto): String {
+        return authenticationService.authenticate(userDto = userDto)
     }
 
     @GetMapping("/{id}")

@@ -3,17 +3,15 @@ package com.movieworld.user_service.config
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import java.util.*
-import javax.crypto.spec.SecretKeySpec
-import kotlin.collections.HashMap
 import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.security.Keys
 import org.springframework.stereotype.Component
+import java.security.Key
 
 @Component
-class JwtUtil(
-    private val secret: String = "secret"
-) {
+class JwtUtil() {
 
-    private val key = SecretKeySpec(secret.toByteArray(), SignatureAlgorithm.HS256.jcaName)
+    private val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS256)
 
 
     fun generateToken(email: String): String {
@@ -49,12 +47,7 @@ class JwtUtil(
     }
 
     fun validateToken(token: String, username: String): Boolean {
-        val email = extractEmail(token)
-        return (email == username && !isTokenExpired(token))
-    }
-
-    private fun isTokenExpired(token: String): Boolean {
-        val expiration = extractClaim(token, Claims::getExpiration)
-        return expiration.before(Date())
+        val claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).body
+        return claims.subject == username && !claims.expiration.before(Date())
     }
 }
