@@ -5,18 +5,20 @@ import io.jsonwebtoken.Jwts
 import java.util.*
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import java.security.Key
 
 @Component
 class JwtUtil() {
-
     private val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS256)
 
 
-    fun generateToken(email: String): String {
-        val claims: Map<String, Any> = HashMap()
-        return createToken(claims, email)
+    fun generateToken(userDetails: UserDetails): String {
+        val claims: MutableMap<String, Any> = mutableMapOf()
+        val role = userDetails.authorities.first().authority
+        claims["role"] = role
+        return createToken(claims, userDetails.username)
     }
 
     private fun createToken(claims: Map<String, Any>, subject: String): String {
@@ -44,6 +46,11 @@ class JwtUtil() {
             .build()
             .parseClaimsJws(token)
             .body
+    }
+
+    fun extractRole(token: String): String {
+        val claims = extractAllClaims(token)
+        return claims["role"] as String
     }
 
     fun validateToken(token: String, username: String): Boolean {
