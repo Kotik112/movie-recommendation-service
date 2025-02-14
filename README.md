@@ -47,6 +47,13 @@ Each service is designed to operate independently, allowing for scalability and 
        username: your_username
        password: your_password
        driver-class-name: org.postgresql.Driver
+   
+   server:
+     port: <unique port number>
+   
+   logging:
+     pattern:
+       console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
    ```
 3. **Run the Services:**
 
