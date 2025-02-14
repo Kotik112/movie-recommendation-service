@@ -8,6 +8,7 @@ import com.movieworld.user_service.model.UserProfile
 import com.movieworld.user_service.repository.UserProfileRepository
 import com.movieworld.user_service.repository.UserRepository
 import com.movieworld.user_service.service.UserService
+import org.slf4j.LoggerFactory
 import org.springframework.security.core.userdetails.User as SpringUser
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -21,6 +22,10 @@ class UserServiceImpl(
     private val userProfileRepository: UserProfileRepository
 ): UserService {
 
+    companion object {
+        private val logger = LoggerFactory.getLogger(UserServiceImpl::class.java)
+    }
+
     /**
     * Create a new user in the users table, also create a user profile for the user with
     * empty watch history and ratings.
@@ -30,6 +35,7 @@ class UserServiceImpl(
      */
     override fun createUser(user: UserDto): UserDto {
         if (userRepository.userExistsByEmail(email = user.email)) {
+            logger.warn("User already exists")
             throw UserAlreadyExistsException(message = "User with email ${user.email} already exists")
         }
         val userToSave = User(
@@ -45,6 +51,7 @@ class UserServiceImpl(
             watchHistory = mutableSetOf(),
             ratings = mutableSetOf()
         )
+        logger.info("Saving user to the database")
         userProfileRepository.save(userProfile)
         return savedUser.toDto()
     }
@@ -57,7 +64,11 @@ class UserServiceImpl(
      */
     override fun getUserById(userId: Long): UserDto {
         val user = userRepository.findByUserId(userId)
-            ?: throw UserNotFoundException(message = "User with id: $userId not found")
+            ?: run {
+                logger.warn("User with id: $userId not found")
+                throw UserNotFoundException(message = "User with id: $userId not found")
+            }
+        logger.debug("User with id: $userId found")
         return user.toDto().copy(password = "")
     }
 
@@ -69,7 +80,10 @@ class UserServiceImpl(
      */
     override fun getUserByEmail(email: String): UserDto {
         val user = userRepository.findByEmail(email)
-            ?: throw UserNotFoundException(message = "User with email $email, not found")
+            ?: run {
+                logUserNotFound(email)
+                throw UserNotFoundException(message = "User with email: $email not found")
+            }
         return user.toDto().copy(password = "")
     }
 
@@ -81,7 +95,10 @@ class UserServiceImpl(
      */
     override fun updateUser(userToUpdate: UserDto): UserDto {
         val existingUser = userRepository.findByEmail(userToUpdate.email)
-            ?: throw UserNotFoundException(message = "User with email: ${userToUpdate.email} not found")
+            ?: run {
+                logUserNotFound(userToUpdate.email)
+                throw UserNotFoundException(message = "User with email: ${userToUpdate.email} not found")
+            }
         val updatedUser = existingUser.copy(
             firstName = userToUpdate.firstName,
             lastName = userToUpdate.lastName,
@@ -98,6 +115,7 @@ class UserServiceImpl(
     * @param userId: Long - the id of the user to delete
      */
     override fun deleteUser(userId: Long) {
+        logger.debug("Deleting user with id: $userId")
         userRepository.deleteById(userId)
     }
 
@@ -109,7 +127,10 @@ class UserServiceImpl(
      */
     override fun loadUserByUsername(email: String): UserDetails {
         val user = userRepository.findByEmail(email = email)
-            ?: throw UsernameNotFoundException("User not found with email: $email")
+            ?: run {
+                logUserNotFound(email)
+                throw UsernameNotFoundException("User not found with email: $email")
+            }
         return SpringUser(
             user.email, user.password, emptyList()
         )
@@ -123,5 +144,9 @@ class UserServiceImpl(
      */
     override fun existsByEmail(email: String): Boolean {
         return userRepository.userExistsByEmail(email = email)
+    }
+
+    private fun logUserNotFound(email: String) {
+        logger.warn("User with email: $email not found")
     }
 }

@@ -10,6 +10,7 @@ import com.movieworld.user_service.model.WatchHistoryEntryDto
 import com.movieworld.user_service.repository.UserProfileRepository
 import com.movieworld.user_service.service.MovieServiceClient
 import com.movieworld.user_service.service.UserProfileService
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,9 +18,17 @@ class UserProfileServiceImpl(
     private val userProfileRepository: UserProfileRepository,
     private val movieService: MovieServiceClient
 ): UserProfileService {
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(UserProfileServiceImpl::class.java)
+    }
+
     override fun getUserProfileByUserId(userId: Long): UserProfileDto {
         val userProfile = userProfileRepository.findByUserId(userId)
-            ?: throw UserProfileNotFoundException(message = "User Profile for user with id: $userId, not found")
+            ?: run {
+                logUserProfileNotFound(userId)
+                throw UserProfileNotFoundException(message = "User Profile for user with id: $userId, not found")
+            }
         return userProfile.toDto()
     }
 
@@ -31,7 +40,10 @@ class UserProfileServiceImpl(
 
     override fun updateWatchHistory(userId: Long, watchHistoryEntry: WatchHistoryEntryDto): UserProfileDto {
         val userProfile = userProfileRepository.findByUserId(userId)
-            ?: throw UserProfileNotFoundException(message = "User Profile for user with id: $userId, not found")
+            ?: run {
+                logUserProfileNotFound(userId)
+                throw UserProfileNotFoundException(message = "User Profile for user with id: $userId, not found")
+            }
         if (!movieService.movieExistsById(watchHistoryEntry.movieId)) {
             throw MovieNotFoundException(message = "Movie with id: ${watchHistoryEntry.movieId}, not found")
         }
@@ -46,7 +58,10 @@ class UserProfileServiceImpl(
 
     override fun updateRating(userId: Long, rating: RatingDto): UserProfileDto {
         val userProfile = userProfileRepository.findByUserId(userId)
-            ?: throw UserProfileNotFoundException(message = "User Profile for user with id: $userId, not found")
+            ?: run {
+                logUserProfileNotFound(userId)
+                throw UserProfileNotFoundException(message = "User Profile for user with id: $userId, not found")
+            }
         if (!movieService.movieExistsById(rating.movieId)) {
             throw MovieNotFoundException(message = "Movie with id: ${rating.movieId}, not found")
         }
@@ -62,7 +77,10 @@ class UserProfileServiceImpl(
 
     fun deleteWatchHistoryEntry(userId: Long, watchHistoryEntryId: Long): UserProfileDto {
         val userProfile = userProfileRepository.findByUserId(userId)
-            ?: throw UserProfileNotFoundException(message = "User Profile for user with id: $userId, not found")
+            ?: run {
+                logUserProfileNotFound(userId)
+                throw UserProfileNotFoundException(message = "User Profile for user with id: $userId, not found")
+            }
         val updatedWatchHistory = userProfile.watchHistory
             .filter { it.id != watchHistoryEntryId }
             .toMutableSet()
@@ -72,11 +90,18 @@ class UserProfileServiceImpl(
 
     fun deleteRating(userId: Long, ratingId: Long): UserProfileDto {
         val userProfile = userProfileRepository.findByUserId(userId)
-            ?: throw UserProfileNotFoundException(message = "User Profile for user with id: $userId, not found")
+            ?: run {
+                logUserProfileNotFound(userId)
+                throw UserProfileNotFoundException(message = "User Profile for user with id: $userId, not found")
+            }
         val updatedRatings = userProfile.ratings
             .filter { it.id != ratingId }
             .toMutableSet()
         val updatedUserProfile = userProfile.copy(ratings = updatedRatings)
         return userProfileRepository.save(updatedUserProfile).toDto()
+    }
+
+    private fun logUserProfileNotFound(userId: Long) {
+        logger.error("User Profile for user with id: $userId, not found")
     }
 }
