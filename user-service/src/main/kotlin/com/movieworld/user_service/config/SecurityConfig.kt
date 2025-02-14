@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.context.annotation.Lazy
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
@@ -15,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @Suppress("unused")
 class SecurityConfig(
     private val passwordEncoder: PasswordEncoder,
@@ -29,7 +31,7 @@ class SecurityConfig(
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers("/api/v1/users/create").permitAll()
-                    .requestMatchers("/api/v1/users/**").hasAuthority("USER")
+                    .requestMatchers("/api/v1/users/**").hasAuthority("ROLE_USER")
                     .requestMatchers("/api/v1/userProfile/**").permitAll()
                     .requestMatchers("/api/v1/auth/**").permitAll()
                     .anyRequest().authenticated()

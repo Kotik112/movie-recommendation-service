@@ -16,7 +16,7 @@ class JwtUtil {
 
     fun generateToken(userDetails: UserDetails): String {
         val claims: MutableMap<String, Any> = mutableMapOf()
-        val role = userDetails.authorities.first().authority
+        val role = userDetails.authorities.first().authority.removePrefix("ROLE_")
         claims["role"] = role
         return createToken(claims, userDetails.username)
     }
