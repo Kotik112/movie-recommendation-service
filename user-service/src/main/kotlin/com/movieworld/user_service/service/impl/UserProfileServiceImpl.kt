@@ -47,11 +47,23 @@ class UserProfileServiceImpl(
         if (!movieService.movieExistsById(watchHistoryEntry.movieId)) {
             throw MovieNotFoundException(message = "Movie with id: ${watchHistoryEntry.movieId}, not found")
         }
-        val updatedWatchHistory = (userProfile.watchHistory + WatchHistoryEntry(
-            movieId = watchHistoryEntry.movieId,
-            watchedOn = watchHistoryEntry.watchedAt,
-            userProfile = userProfile
-        )).toMutableSet()
+        val updatedWatchHistory = userProfile.watchHistory.map {
+            if (it.movieId == watchHistoryEntry.movieId) {
+                logger.debug("User has already watched movie with id: ${watchHistoryEntry.movieId}, updating watchedOn date")
+                it.copy(watchedOn = watchHistoryEntry.watchedAt)
+            }
+            else
+                it
+        }.toMutableSet()
+
+        if (updatedWatchHistory.none { it.movieId == watchHistoryEntry.movieId }) {
+            updatedWatchHistory.add(WatchHistoryEntry(
+                userProfile = userProfile,
+                movieId = watchHistoryEntry.movieId,
+                watchedOn = watchHistoryEntry.watchedAt
+            ))
+        }
+
         val updatedUserProfile = userProfile.copy(watchHistory = updatedWatchHistory)
         return userProfileRepository.save(updatedUserProfile).toDto()
     }
@@ -65,12 +77,26 @@ class UserProfileServiceImpl(
         if (!movieService.movieExistsById(rating.movieId)) {
             throw MovieNotFoundException(message = "Movie with id: ${rating.movieId}, not found")
         }
-        val updatedRatings = (userProfile.ratings + Rating(
-            ratingValue = rating.ratingValue,
-            ratedAt = rating.ratedAt,
-            userProfile = userProfile,
-            movieId = rating.movieId
-        )).toMutableSet()
+        val updatedRatings = userProfile.ratings.map {
+            if (it.movieId == rating.movieId) {
+                logger.debug("User has already rated movie with id: ${rating.movieId}, updating rating value")
+                it.copy(
+                    ratingValue = rating.ratingValue,
+                    ratedAt = rating.ratedAt
+                )
+            }
+            else
+                it
+        }.toMutableSet()
+
+        if (updatedRatings.none { it.movieId == rating.movieId }) {
+            updatedRatings.add(Rating(
+                userProfile = userProfile,
+                movieId = rating.movieId,
+                ratingValue = rating.ratingValue
+            ))
+        }
+
         val updatedUserProfile = userProfile.copy(ratings = updatedRatings)
         return userProfileRepository.save(updatedUserProfile).toDto()
     }

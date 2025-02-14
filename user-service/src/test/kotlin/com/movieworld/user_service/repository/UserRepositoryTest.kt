@@ -1,6 +1,7 @@
 package com.movieworld.user_service.repository
 
 import com.movieworld.movie_service.util.PostgresTestContainer
+import com.movieworld.user_service.model.Role
 import com.movieworld.user_service.model.User
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,7 +20,8 @@ class UserRepositoryTest: PostgresTestContainer() {
             email = "test@mail.com",
             password = "password",
             firstName = "John",
-            lastName = "Doe"
+            lastName = "Doe",
+            role = Role.USER
         )
         userRepository.save(user)
 
@@ -34,7 +36,8 @@ class UserRepositoryTest: PostgresTestContainer() {
             email = "test@mail.com",
             password = "password",
             firstName = "John",
-            lastName = "Doe"
+            lastName = "Doe",
+            role = Role.USER
         )
         userRepository.save(user)
 
@@ -49,7 +52,8 @@ class UserRepositoryTest: PostgresTestContainer() {
             email = "test@mail.com",
             password = "password",
             firstName = "John",
-            lastName = "Doe"
+            lastName = "Doe",
+            role = Role.USER
         )
         userRepository.save(user)
 

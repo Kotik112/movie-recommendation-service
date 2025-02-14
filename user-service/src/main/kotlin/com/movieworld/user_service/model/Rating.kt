@@ -23,7 +23,7 @@ import java.time.LocalDateTime
         )
     ]
 )
-class Rating(
+data class Rating(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
@@ -46,7 +46,7 @@ class Rating(
         name = "rated_at",
         nullable = false
     )
-    val ratedAt: LocalDateTime,
+    val ratedAt: LocalDateTime = LocalDateTime.now(),
 
     @ManyToOne
     @JoinColumn(

@@ -1,5 +1,6 @@
 package com.movieworld.user_service.service.impl
 
+import com.movieworld.user_service.model.Role
 import com.movieworld.user_service.model.User
 import com.movieworld.user_service.model.UserDto
 import com.movieworld.user_service.model.UserProfile
@@ -40,11 +41,11 @@ class UserServiceImplTest {
             userProfileRepository = userProfileRepository
         )
         val user = User(
-            id = 1,
             firstName = "John",
             lastName = "Doe",
             email = "test@mail.com",
             password = "password",
+            role = Role.USER
         )
         val userProfile = UserProfile(
             id = 1,
@@ -82,6 +83,7 @@ class UserServiceImplTest {
             lastName = "Doe",
             email = "test@mail.com",
             password = "password",
+            role = Role.USER,
         )
 
         `when`(userRepository.findByUserId(1)).thenReturn(user)
@@ -112,6 +114,7 @@ class UserServiceImplTest {
             lastName = "Doe",
             email = "test@mail.com",
             password = "password",
+            role = Role.USER,
         )
 
         // Expected UserDto
@@ -142,6 +145,7 @@ class UserServiceImplTest {
             lastName = "Doe",
             email = "test@mail.com",
             password = "password",
+            role = Role.USER,
         )
         val updatedUser = user.copy(
             firstName = "Jane",
@@ -179,6 +183,7 @@ class UserServiceImplTest {
             lastName = "Doe",
             email = "test@mail.com",
             password = "password",
+            role = Role.USER,
         )
 
         `when`(userRepository.findByEmail(anyString())).thenReturn(user)
