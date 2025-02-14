@@ -19,7 +19,7 @@ class AuthController(
         return authenticationService.authenticate(loginDto = loginDto)
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/logout")
     fun logout(): String {
         return "You have been logged out."
