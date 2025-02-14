@@ -10,13 +10,15 @@ import com.movieworld.user_service.model.WatchHistoryEntryDto
 import com.movieworld.user_service.repository.UserProfileRepository
 import com.movieworld.user_service.service.MovieServiceClient
 import com.movieworld.user_service.service.UserProfileService
+import com.movieworld.user_service.service.authentication.AuthenticationService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class UserProfileServiceImpl(
     private val userProfileRepository: UserProfileRepository,
-    private val movieService: MovieServiceClient
+    private val movieService: MovieServiceClient,
+    private val authenticationService: AuthenticationService
 ): UserProfileService {
 
     companion object {
@@ -39,6 +41,11 @@ class UserProfileServiceImpl(
     }
 
     override fun updateWatchHistory(userId: Long, watchHistoryEntry: WatchHistoryEntryDto): UserProfileDto {
+        if (userId != authenticationService.getAuthenticatedUserId()) {
+            // TODO: Change to a better exception
+            throw UserProfileNotFoundException(message = "Not authorized to update watch history for user with id: $userId")
+        }
+
         val userProfile = userProfileRepository.findByUserId(userId)
             ?: run {
                 logUserProfileNotFound(userId)
@@ -69,6 +76,11 @@ class UserProfileServiceImpl(
     }
 
     override fun updateRating(userId: Long, rating: RatingDto): UserProfileDto {
+        if (userId != authenticationService.getAuthenticatedUserId()) {
+            // TODO: Change to a better exception
+            throw UserProfileNotFoundException(message = "Not authorized to update watch history for user with id: $userId")
+        }
+
         val userProfile = userProfileRepository.findByUserId(userId)
             ?: run {
                 logUserProfileNotFound(userId)

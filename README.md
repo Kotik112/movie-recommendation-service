@@ -16,7 +16,7 @@ Each service is designed to operate independently, allowing for scalability and 
 
 ### Prerequisites
 
-- **Java Development Kit (JDK)**: Ensure that JDK 11 or higher is installed.
+- **Java Development Kit (JDK)**: Ensure that JDK 11 or higher is installed. (JDK21 was used while developing this project)
 - **Apache Maven**: Used for building and managing the project dependencies.
 - **PostgreSQL**: Ensure that PostgreSQL is installed and a database is set up for the services.
 
