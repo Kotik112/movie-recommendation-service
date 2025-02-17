@@ -6,6 +6,7 @@ import com.movieworld.movie_service.model.Movie
 import com.movieworld.movie_service.model.MovieDto
 import com.movieworld.movie_service.repository.MovieManagementRepository
 import com.movieworld.movie_service.service.MovieManagementService
+import com.movieworld.movie_service.util.TimeService
 import org.springframework.stereotype.Service
 
 @Service
@@ -56,7 +57,7 @@ class MovieManagementServiceImpl(
         return rowsDeleted > 0
     }
 
-    override fun getMovie(title: String): MovieDto {
+    override fun getMovieByTitle(title: String): MovieDto {
         val movie = movieManagementRepository.findMovieByTitle(title = title).orElseThrow {
             MovieNotFoundException(message = "Movie with title $title not found")
         }
@@ -65,6 +66,12 @@ class MovieManagementServiceImpl(
 
     override fun getAllMovie(): List<MovieDto> {
         return movieManagementRepository.findAllMovies().map { it.toDto() }
+    }
+
+    override fun getAllMoviesByYear(yearAsInt: Int): List<MovieDto> {
+        val year = TimeService.getTimeWindowForYear(yearAsInt = yearAsInt)
+        return movieManagementRepository.findAllMoviesByYear(startDate = year.startDate, endDate = year.endDate)
+            .map { it.toDto() }
     }
 
     override fun movieExistsById(movieId: Long): Boolean {

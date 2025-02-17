@@ -94,6 +94,21 @@ class MovieManagementRepositoryTest: PostgresTestContainer() {
         assertEquals("The Godfather", movies[0].title)
     }
 
+    @Test
+    fun `Test findAllMoviesByYear`() {
+        saveMovies()
+        val movies = movieManagementRepository.findAllMoviesByYear(
+            LocalDate.of(1994, 1, 1),
+            LocalDate.of(1994, 12, 31)
+        )
+        assertThat(movies).hasSize(1)
+        assertEquals("The Shawshank Redemption", movies[0].title)
+    }
+
+
+    /**
+    * Helper method to save movies
+     */
     private fun saveMovies() {
         movieManagementRepository.deleteAll()
         val movie1 = Movie(

@@ -175,7 +175,7 @@ class MovieManagementServiceTest {
         val movie = Optional.of(movieToFind)
         `when`(movieManagementRepository.findMovieByTitle("The Matrix")).thenReturn(movie)
 
-        val actual = movieManagementService.getMovie("The Matrix")
+        val actual = movieManagementService.getMovieByTitle("The Matrix")
         assertEquals(movieToFind.toDto(), actual)
     }
 
@@ -185,7 +185,7 @@ class MovieManagementServiceTest {
         `when`(movieManagementRepository.findMovieByTitle("The Matrix")).thenReturn(movie)
 
         assertThrows<MovieNotFoundException> {
-            movieManagementService.getMovie("The Matrix")
+            movieManagementService.getMovieByTitle("The Matrix")
         }
     }
 
@@ -209,6 +209,39 @@ class MovieManagementServiceTest {
         `when`(movieManagementRepository.findAllMovies()).thenReturn(listOf(movie1, movie2))
 
         val movies = movieManagementService.getAllMovie()
+        assertEquals(2, movies.size)
+        assertEquals("The Shawshank Redemption", movies[0].title)
+        assertEquals("The Godfather", movies[1].title)
+    }
+
+    @Test
+    fun `Test getAllMovies should return empty list`() {
+        `when`(movieManagementRepository.findAllMovies()).thenReturn(emptyList())
+
+        val movies = movieManagementService.getAllMovie()
+        assertEquals(0, movies.size)
+    }
+
+    @Test
+    fun `Test getAllMoviesByYear`() {
+        val movie1 = Movie(
+            title = "The Shawshank Redemption",
+            genre = "Drama",
+            releaseDate = LocalDate.of(1994, 10, 14),
+            director = "Frank Darabont",
+            description = "Two imprisoned"
+        )
+        val movie2 = Movie(
+            title = "The Godfather",
+            genre = "Crime",
+            releaseDate = LocalDate.of(1972, 3, 24),
+            director = "Francis Ford Coppola",
+            description = "The aging patriarch"
+        )
+
+        `when`(movieManagementRepository.findAllMoviesByYear(LocalDate.of(1994, 1, 1), LocalDate.of(1994, 12, 31))).thenReturn(listOf(movie1, movie2))
+
+        val movies = movieManagementService.getAllMoviesByYear(1994)
         assertEquals(2, movies.size)
         assertEquals("The Shawshank Redemption", movies[0].title)
         assertEquals("The Godfather", movies[1].title)

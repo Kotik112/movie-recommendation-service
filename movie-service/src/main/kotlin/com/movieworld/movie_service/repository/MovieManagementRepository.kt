@@ -22,6 +22,9 @@ interface MovieManagementRepository: JpaRepository<Movie, Long> {
     @Query("SELECT * FROM movie", nativeQuery = true)
     fun findAllMovies(): List<Movie>
 
+    @Query("SELECT * FROM movie WHERE release_date BETWEEN :startDate AND :endDate", nativeQuery = true)
+    fun findAllMoviesByYear(@Param("startDate") startDate: LocalDate, @Param("endDate") endDate: LocalDate): List<Movie>
+
     @Query("SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END FROM Movie m WHERE m.id = :id")
     fun existsById(@Param("id") title: String): Boolean
 
