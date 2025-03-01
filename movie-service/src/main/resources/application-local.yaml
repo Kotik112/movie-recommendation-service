@@ -1,0 +1,16 @@
+spring:
+  config:
+    import: "optional:classpath:secrets.yaml"
+
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWD}
+    driverClassName: org.postgresql.Driver
+
