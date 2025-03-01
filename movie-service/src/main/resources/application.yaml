@@ -3,15 +3,8 @@ spring:
     name: movie-service
 
   profiles:
-    active: local
+    default: local
 
-  datasource:
-      url: ${DB_URL}
-      username: ${DB_USER}
-      password: ${DB_PASSWD}
-      driverClassName: org.postgresql.Driver
-  server:
-    port: 8081
 
 logging:
   pattern:

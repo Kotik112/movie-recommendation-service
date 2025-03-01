@@ -1,9 +1,10 @@
 spring:
   application:
-    name: recommendation-service
+    name: user-service
 
   profiles:
     default: local
+
 
 logging:
   pattern:

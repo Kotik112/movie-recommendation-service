@@ -1,5 +1,3 @@
-# Start app with:
-#  java -jar your-application.jar --spring.config.additional-location=file:C:/Users/<user name>/IdeaProjects/movie-recommendation-service/secrets.yaml
 spring:
   config:
     additional-location: 'file:./secrets.yaml'
