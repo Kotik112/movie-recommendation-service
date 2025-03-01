@@ -1,0 +1,4 @@
+# Exclude IntelliJ IDEA project files
+.idea/
+*.iml
+*.xml
