@@ -16,7 +16,7 @@ interface UserServiceClient {
     fun getUserByEmail(@PathVariable email: String): UserDto
 }
 
-@FeignClient(name = "user-service", url = "http://localhost:8081/api/v1/movies")
+@FeignClient(name = "movie-service", url = "http://localhost:8082/api/v1/movies")
 interface MovieServiceClient {
 
     @GetMapping("/{id}")
