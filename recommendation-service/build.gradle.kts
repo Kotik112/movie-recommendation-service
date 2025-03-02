@@ -1,4 +1,5 @@
 val springDocVersion = "2.8.5"
+val tcVersion = "1.20.4"
 
 plugins {
 	kotlin("jvm") version "1.9.25"
@@ -46,6 +47,9 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.springframework.kafka:spring-kafka-test")
+	testImplementation("org.testcontainers:junit-jupiter:$tcVersion")
+	testImplementation("org.testcontainers:testcontainers:$tcVersion")
+	testImplementation("org.testcontainers:postgresql:$tcVersion")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

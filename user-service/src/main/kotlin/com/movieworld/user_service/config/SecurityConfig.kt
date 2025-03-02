@@ -34,7 +34,7 @@ class SecurityConfig(
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers("/api/v1/users/create").permitAll()
-                    .requestMatchers("/api/v1/users/**").hasAuthority("ROLE_USER")
+                    .requestMatchers("/api/v1/users/**").permitAll()
                     .requestMatchers("/api/v1/userProfile/**").permitAll()
                     .requestMatchers("/api/v1/auth/**").permitAll()
                     .requestMatchers(
