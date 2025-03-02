@@ -16,6 +16,12 @@ class SecurityConfig {
         http
             .csrf { it.disable() } // Disable CSRF for development
             .authorizeHttpRequests { auth ->
+                auth.requestMatchers(
+                    "/v3/api-docs/**",    // Allow access to OpenAPI docs
+                    "/swagger-ui/**",     // Allow access to Swagger UI
+                    "/swagger-ui.html" ,
+                    "/api/v1/users",
+                ).permitAll()
                 auth.anyRequest().permitAll() // Allow all requests (adjust as needed)
             }
             .cors { it.configurationSource(corsConfigurationSource()) } // Set the custom CORS configuration

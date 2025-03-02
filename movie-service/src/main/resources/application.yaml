@@ -5,6 +5,8 @@ spring:
   profiles:
     default: local
 
+server:
+  port: 8081
 
 logging:
   pattern:

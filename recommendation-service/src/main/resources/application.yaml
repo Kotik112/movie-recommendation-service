@@ -5,6 +5,9 @@ spring:
   profiles:
     default: local
 
+server:
+  port: 8083
+
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
