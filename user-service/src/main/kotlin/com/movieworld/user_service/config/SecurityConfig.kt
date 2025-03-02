@@ -37,6 +37,12 @@ class SecurityConfig(
                     .requestMatchers("/api/v1/users/**").hasAuthority("ROLE_USER")
                     .requestMatchers("/api/v1/userProfile/**").permitAll()
                     .requestMatchers("/api/v1/auth/**").permitAll()
+                    .requestMatchers(
+                        "/v3/api-docs/**",    // Allow access to OpenAPI docs
+                        "/swagger-ui/**",     // Allow access to Swagger UI
+                        "/swagger-ui.html" ,
+                        "/api/v1/users",
+                    ).permitAll()
                     .anyRequest().authenticated()
             }
             .cors { cors -> cors.configurationSource(corsConfigurationSource()) }
@@ -53,7 +59,10 @@ class SecurityConfig(
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("http://127.0.0.1:5500") // Allow frontend requests
+        configuration.allowedOrigins = listOf(
+            "http://127.0.0.1:5500",
+            "http://localhost:8083",
+        )
         configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
         configuration.allowedHeaders = listOf("Authorization", "Content-Type")
         configuration.allowCredentials = true // Allow cookies (if needed)
