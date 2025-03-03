@@ -68,7 +68,7 @@ class SecurityConfig(
         configuration.allowCredentials = true // Allow cookies (if needed)
 
         val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", configuration) // Apply to all endpoints
+        source.registerCorsConfiguration("/**", configuration)
         return source
     }
 }
