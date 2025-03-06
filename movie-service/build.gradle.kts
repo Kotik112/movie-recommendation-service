@@ -8,6 +8,7 @@ plugins {
 	id("org.springframework.boot") version "3.4.1"
 	id("io.spring.dependency-management") version "1.1.7"
 	kotlin("plugin.jpa") version "1.9.25"
+	id("com.google.cloud.tools.jib") version "3.4.4"
 }
 
 group = "com.movieworld"
@@ -71,3 +72,21 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 	jvmArgs("-XX:+EnableDynamicAgentLoading")
 }
+
+jib {
+	from {
+		image = "amazoncorretto:21"
+	}
+	to {
+		image = "thekotik/movie-service"
+		tags = setOf("latest", version.toString())
+	}
+	container {
+		jvmFlags = listOf("-Xms512m", "-Xmx1024m")
+		ports = listOf("8080")
+		environment = mapOf(
+			"SPRING_PROFILES_ACTIVE" to "prod"
+		)
+	}
+}
+

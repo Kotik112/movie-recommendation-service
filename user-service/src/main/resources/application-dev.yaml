@@ -4,6 +4,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
+
   datasource:
     platform: postgres
     url: ${DB_URL}

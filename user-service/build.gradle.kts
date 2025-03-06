@@ -8,6 +8,7 @@ plugins {
 	id("org.springframework.boot") version "3.4.1"
 	id("io.spring.dependency-management") version "1.1.7"
 	kotlin("plugin.jpa") version "1.9.25"
+	id("com.google.cloud.tools.jib") version "3.4.4"
 }
 
 group = "com.movieworld"
@@ -34,14 +35,16 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2")
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	//implementation("com.google.cloud.tools:jib-maven-plugin:$jibVersion")
 	implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtVersion")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
-	runtimeOnly("org.postgresql:postgresql")
+	implementation("org.postgresql:postgresql:42.2.24")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.projectlombok:lombok")
@@ -78,4 +81,21 @@ allOpen {
 tasks.withType<Test> {
 	useJUnitPlatform()
 	jvmArgs("-XX:+EnableDynamicAgentLoading")
+}
+
+jib {
+	from {
+		image = "amazoncorretto:21"
+	}
+	to {
+		image = "thekotik/user-service"
+		tags = setOf("latest", version.toString())
+	}
+	container {
+		jvmFlags = listOf("-Xms512m", "-Xmx1024m")
+		ports = listOf("8080")
+		environment = mapOf(
+			"SPRING_PROFILES_ACTIVE" to "prod"
+		)
+	}
 }
