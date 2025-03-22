@@ -1,5 +1,6 @@
 val tcVersion = "1.20.4"
 val mockitoVersion = "5.0.0"
+val springDocVersion = "2.8.5"
 
 plugins {
 	kotlin("jvm") version "1.9.25"
@@ -7,6 +8,7 @@ plugins {
 	id("org.springframework.boot") version "3.4.1"
 	id("io.spring.dependency-management") version "1.1.7"
 	kotlin("plugin.jpa") version "1.9.25"
+	id("com.google.cloud.tools.jib") version "3.4.4"
 }
 
 group = "com.movieworld"
@@ -36,6 +38,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
@@ -69,3 +72,21 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 	jvmArgs("-XX:+EnableDynamicAgentLoading")
 }
+
+jib {
+	from {
+		image = "amazoncorretto:21"
+	}
+	to {
+		image = "thekotik/movie-service"
+		tags = setOf("latest", version.toString())
+	}
+	container {
+		jvmFlags = listOf("-Xms512m", "-Xmx1024m")
+		ports = listOf("8080")
+		environment = mapOf(
+			"SPRING_PROFILES_ACTIVE" to "prod"
+		)
+	}
+}
+

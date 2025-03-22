@@ -41,6 +41,7 @@ class UserServiceImplTest {
             userProfileRepository = userProfileRepository
         )
         val user = User(
+            id = 1,
             firstName = "John",
             lastName = "Doe",
             email = "test@mail.com",
@@ -160,7 +161,7 @@ class UserServiceImplTest {
             firstName = "Jane",
             lastName = "Doe",
             email = "newEmail@gmail.com",
-            password = "newPassword",
+            password = "",
         )
 
         `when`(userRepository.findByEmail(anyString())).thenReturn(user)

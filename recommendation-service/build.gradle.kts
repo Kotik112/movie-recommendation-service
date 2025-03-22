@@ -1,9 +1,13 @@
+val springDocVersion = "2.8.5"
+val tcVersion = "1.20.4"
+
 plugins {
 	kotlin("jvm") version "1.9.25"
 	kotlin("plugin.spring") version "1.9.25"
 	id("org.springframework.boot") version "3.4.1"
 	id("io.spring.dependency-management") version "1.1.7"
 	kotlin("plugin.jpa") version "1.9.25"
+	id("com.google.cloud.tools.jib") version "3.4.4"
 }
 
 group = "com.movieworld"
@@ -33,6 +37,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 	implementation("org.springframework.kafka:spring-kafka")
@@ -43,6 +48,9 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.springframework.kafka:spring-kafka-test")
+	testImplementation("org.testcontainers:junit-jupiter:$tcVersion")
+	testImplementation("org.testcontainers:testcontainers:$tcVersion")
+	testImplementation("org.testcontainers:postgresql:$tcVersion")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -66,4 +74,21 @@ allOpen {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+jib {
+	from {
+		image = "amazoncorretto:21"
+	}
+	to {
+		image = "thekotik/recommendation-service"
+		tags = setOf("latest", version.toString())
+	}
+	container {
+		jvmFlags = listOf("-Xms512m", "-Xmx1024m")
+		ports = listOf("8080")
+		environment = mapOf(
+			"SPRING_PROFILES_ACTIVE" to "prod"
+		)
+	}
 }

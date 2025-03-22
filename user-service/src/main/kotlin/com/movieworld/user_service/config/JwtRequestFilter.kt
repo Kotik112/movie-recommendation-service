@@ -23,18 +23,18 @@ class JwtRequestFilter(
         val authorizationHeader = request.getHeader("Authorization")
 
         var email: String? = null
-        var jwt: String? = null
+        var jwtToken: String? = null
 
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7)
-            email = jwtUtil.extractEmail(jwt)
+            jwtToken = authorizationHeader.substring(7)
+            email = jwtUtil.extractEmail(jwtToken)
         }
 
         if (email != null && SecurityContextHolder.getContext().authentication == null) {
             val userDetails = userService.loadUserByUsername(email)
 
-            if (jwtUtil.validateToken(jwt!!, userDetails.username)) {
-                val role = jwtUtil.extractRole(jwt)
+            if (jwtUtil.validateToken(jwtToken!!, userDetails.username)) {
+                val role = jwtUtil.extractRole(jwtToken)
                 val authority = listOf(SimpleGrantedAuthority("ROLE_$role"))
                 val usernamePasswordAuthenticationToken = UsernamePasswordAuthenticationToken(
                     /* principal = */   userDetails,
