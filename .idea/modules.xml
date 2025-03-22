@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/movie-recommendation-service.iml" filepath="$PROJECT_DIR$/.idea/movie-recommendation-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/recommendation-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/recommendation-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/user-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/user-service.main.iml" />
     </modules>
   </component>
 </project>

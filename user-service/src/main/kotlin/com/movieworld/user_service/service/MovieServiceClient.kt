@@ -5,9 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 
-private const val url = "http://localhost:8081/api/v1/movies"
-
-@FeignClient(name = "movie-service", url = url)
+@FeignClient(name = "movie-service", url = "\${url.movie-service}")
 interface MovieServiceClient {
 
     @GetMapping("/{id}")

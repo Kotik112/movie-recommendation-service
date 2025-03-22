@@ -4,6 +4,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
+
   datasource:
     platform: postgres
     url: ${DB_URL}
@@ -12,6 +13,6 @@ spring:
     driverClassName: org.postgresql.Driver
 
 url:
-    movie-service: ${MOVIE_SERVICE_URL}
-    user-service: ${USER_SERVICE_URL}
-    user-profile-service: ${USER_PROFILE_SERVICE_URL}
+  movie-service: ${MOVIE_SERVICE_URL}
+  user-service: ${USER_SERVICE_URL}
+  user-profile-service: ${USER_PROFILE_SERVICE_URL}

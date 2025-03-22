@@ -19,8 +19,8 @@ services:
       timeout: 5s
       retries: 5
 
-  recommendation-service:
-    image: thekotik/recommendation-service:latest
+  movie-service:
+    image: thekotik/movie-service:latest
     depends_on:
       - postgres
     environment:
@@ -32,7 +32,7 @@ services:
       - "8081:8081"
     networks:
       - movieworld-network
-    command: ["/bin/sh", "-c", "./wait-for-it.sh postgres:5432 -- java -jar app.jar"]
+    command: [ "/bin/sh", "-c", "./wait-for-it.sh postgres:5432 -- java -jar app.jar" ]
 
   user-service:
     image: thekotik/user-service:latest
@@ -43,14 +43,15 @@ services:
       DB_URL: jdbc:postgresql://postgres:5432/movie_rec_db
       DB_USER: postgres
       DB_PASSWD: ilrPwd123
+      MOVIE_SERVICE_URL: http://movie-service:8081/api/v1/movies
     ports:
       - "8082:8082"
     networks:
       - movieworld-network
     command: ["/bin/sh", "-c", "./wait-for-it.sh postgres:5432 -- java -jar app.jar"]
 
-  movie-service:
-    image: thekotik/movie-service:latest
+  recommendation-service:
+    image: thekotik/recommendation-service:latest
     depends_on:
       - postgres
     environment:
@@ -58,11 +59,15 @@ services:
       DB_URL: jdbc:postgresql://postgres:5432/movie_rec_db
       DB_USER: postgres
       DB_PASSWD: ilrPwd123
+      MOVIE_SERVICE_URL: http://movie-service:8081/api/v1/movies
+      USER_SERVICE_URL: http://user-service:8082/api/v1/users
+      USER_PROFILE_SERVICE_URL: http://user-service:8082/api/v1/user-profiles
     ports:
       - "8083:8083"
     networks:
       - movieworld-network
-    command: ["/bin/sh", "-c", "./wait-for-it.sh postgres:5432 -- java -jar app.jar"]
+    command: [ "/bin/sh", "-c", "./wait-for-it.sh postgres:5432 -- java -jar app.jar" ]
+
 
 networks:
   movieworld-network:

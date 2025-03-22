@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 
-@FeignClient(name = "user-service", url = "http://localhost:8082/api/v1/users")
+@FeignClient(name = "user-service", url = "\${url.user-service}")
 interface UserServiceClient {
 
     @GetMapping("/{id}")
@@ -17,17 +17,19 @@ interface UserServiceClient {
     fun getUserByEmail(@PathVariable email: String): UserDto
 }
 
-@FeignClient(name = "user-profile-service", url = "http://localhost:8082/api/v1/userProfile")
+@FeignClient(name = "user-profile-service", url = "\${url.user-profile-service}")
 interface UserProfileServiceClient {
 
     @GetMapping("/{id}")
     fun getUserProfileById(@PathVariable id: Long): UserProfileDto
 
     @GetMapping("/email/{email}")
-    fun getUserProfileByEmail(@PathVariable email: String): UserProfileDto
+    fun getUserProfileByEmail(
+        @PathVariable email: String
+    ): UserProfileDto
 }
 
-@FeignClient(name = "movie-service", url = "http://localhost:8081/api/v1/movies")
+@FeignClient(name = "movie-service", url = "\${url.movie-service}")
 interface MovieServiceClient {
 
     @GetMapping("/{id}")
