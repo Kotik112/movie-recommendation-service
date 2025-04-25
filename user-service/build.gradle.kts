@@ -49,10 +49,12 @@ dependencies {
 
 	//implementation("com.google.cloud.tools:jib-maven-plugin:$jibVersion")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
 	implementation("org.postgresql:postgresql:$postgresVersion")
+	// JWT
+	implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtVersion")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
+
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.projectlombok:lombok")
@@ -64,8 +66,8 @@ dependencies {
 	testImplementation("org.testcontainers:junit-jupiter:$tcVersion")
 	testImplementation("org.testcontainers:testcontainers:$tcVersion")
 	testImplementation("org.testcontainers:postgresql:$tcVersion")
-}
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
 
 // For eureka client. Other services didn't need this part. Not sure why.
 dependencyManagement {
@@ -104,7 +106,7 @@ jib {
 	}
 	container {
 		jvmFlags = listOf("-Xms512m", "-Xmx1024m")
-		ports = listOf("8080")
+		ports = listOf("8082")
 		environment = mapOf(
 			"SPRING_PROFILES_ACTIVE" to "prod"
 		)

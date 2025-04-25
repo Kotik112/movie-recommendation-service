@@ -8,6 +8,21 @@ spring:
 server:
   port: 8083
 
+eureka:
+  client:
+    region: default
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
 logging:
   level:
     root: INFO

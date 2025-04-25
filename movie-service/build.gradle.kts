@@ -1,11 +1,12 @@
 val tcVersion = "1.20.4"
 val mockitoVersion = "5.0.0"
 val springDocVersion = "2.8.5"
+val eurekaVersion = "4.1.0"
 
 plugins {
 	kotlin("jvm") version "1.9.25"
 	kotlin("plugin.spring") version "1.9.25"
-	id("org.springframework.boot") version "3.4.1"
+	id("org.springframework.boot") version "3.2.1"
 	id("io.spring.dependency-management") version "1.1.7"
 	kotlin("plugin.jpa") version "1.9.25"
 	id("com.google.cloud.tools.jib") version "3.4.4"
@@ -31,7 +32,7 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:$eurekaVersion")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -39,7 +40,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
+	//implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
@@ -69,11 +70,11 @@ allOpen {
 	annotation("jakarta.persistence.Embeddable")
 }
 
-dependencyManagement {
-	imports {
-		mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.1")
-	}
-}
+//dependencyManagement {
+//	imports {
+//		mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.1")
+//	}
+//}
 
 tasks.withType<Test> {
 	useJUnitPlatform()
