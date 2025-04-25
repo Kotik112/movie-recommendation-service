@@ -31,6 +31,7 @@ repositories {
 }
 
 dependencies {
+	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -68,6 +69,12 @@ allOpen {
 	annotation("jakarta.persistence.Embeddable")
 }
 
+dependencyManagement {
+	imports {
+		mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.1")
+	}
+}
+
 tasks.withType<Test> {
 	useJUnitPlatform()
 	jvmArgs("-XX:+EnableDynamicAgentLoading")
@@ -83,7 +90,7 @@ jib {
 	}
 	container {
 		jvmFlags = listOf("-Xms512m", "-Xmx1024m")
-		ports = listOf("8080")
+		ports = listOf("8081")
 		environment = mapOf(
 			"SPRING_PROFILES_ACTIVE" to "prod"
 		)

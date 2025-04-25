@@ -32,6 +32,7 @@ repositories {
 extra["springCloudVersion"] = "2024.0.0"
 
 dependencies {
+	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -86,7 +87,7 @@ jib {
 	}
 	container {
 		jvmFlags = listOf("-Xms512m", "-Xmx1024m")
-		ports = listOf("8080")
+		ports = listOf("8083")
 		environment = mapOf(
 			"SPRING_PROFILES_ACTIVE" to "prod"
 		)
