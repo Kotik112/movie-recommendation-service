@@ -10,10 +10,12 @@ jobs:
   review:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
+      # Checkout Code
+      - name: Checkout Repo 📂
         uses: actions/checkout@v3
 
-      - name: AI Code Review Action
+        # Set up OpenAI API Key fpr the action
+      - name: AI Code Review Action 🔎
         uses: villesau/ai-codereviewer@v2.7.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # The GITHUB_TOKEN is there by default so you just need to keep it like it is and not necessarily need to add it as secret as it will throw an error. [More Details](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret)
