@@ -68,8 +68,8 @@ class MovieManagementServiceImpl(
         return movieManagementRepository.findAllMovies().map { it.toDto() }
     }
 
-    override fun getAllMoviesByYear(yearAsInt: Int): List<MovieDto> {
-        val year = TimeService.getTimeWindowForYear(yearAsInt = yearAsInt)
+    override fun getAllMoviesByYear(year: Int): List<MovieDto> {
+        val year = TimeService.getTimeWindowForYear(yearAsInt = year)
         return movieManagementRepository.findAllMoviesByYear(startDate = year.startDate, endDate = year.endDate)
             .map { it.toDto() }
     }

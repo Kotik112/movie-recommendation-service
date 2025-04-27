@@ -1,6 +1,10 @@
 spring:
   application:
     name: movie-service
+  security:
+    user:
+      name: user
+      password: password
 
   profiles:
     default: local
@@ -8,6 +12,26 @@ spring:
 server:
   port: 8081
 
+eureka:
+  client:
+    region: default
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
+    register-with-eureka: true
+    fetch-registry: true
+
 logging:
+  level:
+    com.netflix.discovery: DEBUG
+    com.netflix.eureka: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

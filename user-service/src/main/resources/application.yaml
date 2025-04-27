@@ -1,12 +1,33 @@
 spring:
   application:
     name: user-service
+  datasource:
+    hikari:
+      max-lifetime: 1200000 # 20 minutes in ms
+      idle-timeout: 60000
 
   profiles:
     default: local
 
 server:
   port: 8082
+
+eureka:
+  client:
+    region: default
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
+    register-with-eureka: true
+    fetch-registry: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
 
 logging:
   level:

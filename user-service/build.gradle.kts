@@ -1,6 +1,8 @@
 val jwtVersion: String = "0.11.5"
 val tcVersion = "1.20.4"
 val springDocVersion = "2.8.5"
+val jacksonVersion = "2.15.2"
+val postgresVersion = "42.2.24"
 
 plugins {
 	kotlin("jvm") version "1.9.25"
@@ -31,32 +33,43 @@ repositories {
 }
 
 dependencies {
+	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
-	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2")
+
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion")
+	// Feign client
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+	// Spring doc
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
+
 	//implementation("com.google.cloud.tools:jib-maven-plugin:$jibVersion")
+	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("org.postgresql:postgresql:$postgresVersion")
+	// JWT
 	implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtVersion")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
-	implementation("org.postgresql:postgresql:42.2.24")
+
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.projectlombok:lombok")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.springframework.security:spring-security-test")
+	// testcontainers
 	testImplementation("org.testcontainers:junit-jupiter:$tcVersion")
 	testImplementation("org.testcontainers:testcontainers:$tcVersion")
 	testImplementation("org.testcontainers:postgresql:$tcVersion")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
+// For eureka client. Other services didn't need this part. Not sure why.
 dependencyManagement {
 	imports {
 		mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
@@ -93,7 +106,7 @@ jib {
 	}
 	container {
 		jvmFlags = listOf("-Xms512m", "-Xmx1024m")
-		ports = listOf("8080")
+		ports = listOf("8082")
 		environment = mapOf(
 			"SPRING_PROFILES_ACTIVE" to "prod"
 		)
